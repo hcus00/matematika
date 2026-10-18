@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hatványvadász – azonosságok gyakorlása</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+--bg:#f6f4ff;--card:#fff;--ink:#1f1b3a;--mut:#6b6788;--pri:#6c4cf1;--pri2:#ece8ff;--ok:#1fa971;--okbg:#e3f7ee;--bad:#e5484d;--badbg:#fde8e9;--gold:#f5a524;--bd:#dedaf2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#15132a;--card:#211e3d;--ink:#efedff;--mut:#a5a1c8;--pri:#9a82ff;--pri2:#2e2958;--ok:#43d19a;--okbg:#17382f;--bad:#ff7a7f;--badbg:#44202a;--gold:#ffc24d;--bd:#3a3566}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#15132a;--card:#211e3d;--ink:#efedff;--mut:#a5a1c8;--pri:#9a82ff;--pri2:#2e2958;--ok:#43d19a;--okbg:#17382f;--bad:#ff7a7f;--badbg:#44202a;--gold:#ffc24d;--bd:#3a3566}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+#app{max-width:760px;margin:0 auto;padding:12px 14px 40px}
+.top{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 14px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.lvl{font-weight:800;background:var(--pri);color:#fff;border-radius:12px;padding:4px 10px;white-space:nowrap;cursor:pointer}
+.xpw{flex:1;min-width:0}.xpt{font-size:12px;color:var(--mut);display:flex;justify-content:space-between;gap:6px}
+.bar{height:10px;background:var(--pri2);border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--gold));border-radius:99px;transition:width .5s}
+h1{font-size:24px;margin:18px 0 4px}h2{font-size:19px;margin:22px 0 6px}p{margin:6px 0}
+.sub{color:var(--mut);margin:0 0 8px}.hint{color:var(--mut);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px}
+.tc{cursor:pointer;transition:transform .15s}.tc:hover{transform:translateY(-2px);border-color:var(--pri)}.tc b{font-size:16px}.tc .ic{font-size:26px}
+.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;background:var(--pri);color:#fff;cursor:pointer}
+.btn.sec{background:var(--pri2);color:var(--pri)}.btn.sm{padding:6px 12px;font-size:14px}.btn:disabled{cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.opts .btn{background:var(--card);color:var(--ink);border:2px solid var(--bd);font-family:"Cambria Math",Cambria,Georgia,serif;font-size:19px;font-weight:400;min-height:60px;overflow-x:auto}
+.opts .btn:hover:not(:disabled){border-color:var(--pri)}.opts .good{border-color:var(--ok)!important;background:var(--okbg)!important}.opts .wrong{border-color:var(--bad)!important;background:var(--badbg)!important}
+.fb{border-radius:12px;padding:12px;margin-top:12px;animation:pop .3s}.fb.ok{background:var(--okbg);border:1px solid var(--ok)}.fb.no{background:var(--badbg);border:1px solid var(--bad)}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.bd{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.b{text-align:center;padding:12px 8px;border-radius:14px;border:1px solid var(--bd);background:var(--card)}.b.off{opacity:.4;filter:grayscale(1)}.b .e{font-size:30px}.b small{color:var(--mut);display:block}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;z-index:20;animation:pop .3s;max-width:90%;text-align:center}
+.big{font-size:44px;text-align:center}
+.seg{display:inline-flex;flex-wrap:wrap;gap:2px;background:var(--pri2);border-radius:99px;padding:4px}.seg button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--pri);padding:8px 16px;border-radius:99px;cursor:pointer}.seg button.on{background:linear-gradient(135deg,#6c4cf1,#9a6cff);color:#fff;box-shadow:0 3px 10px rgba(108,76,241,.45)}.dl{font-size:13px;color:var(--mut);margin:4px 0 6px}
+details{margin-top:14px}summary{cursor:pointer;font-weight:700}
+sup{font-size:.62em;line-height:0}
+.expr{font-size:28px;text-align:center;padding:18px 4px;overflow-x:auto;font-family:"Cambria Math",Cambria,Georgia,serif}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .12em}.nu{border-bottom:2px solid currentColor;padding:0 .3em}.de{padding:0 .3em}
+.rule{background:var(--pri2);border-left:4px solid var(--pri);padding:8px 12px;border-radius:8px;margin:6px 0;font-family:"Cambria Math",Cambria,Georgia,serif;font-size:18px;overflow-x:auto}
+.th p,.th li,.ex li{font-family:"Cambria Math",Cambria,Georgia,serif;font-size:17px}.th h3{margin:1.1em 0 .2em}.th ul{padding-left:20px}.warn{color:var(--bad)}
+.ans{font-family:"Cambria Math",Cambria,Georgia,serif;font-size:21px}
+.bt{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:.95rem}.bt span:first-child{flex:0 0 42%}.bt span:last-child{flex:0 0 88px;text-align:right}.bt .bar{flex:1}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+const sup=s=>`<sup>${s}</sup>`;
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[R(0,a.length-1)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const pw=(b,e)=>(e===1||e==='1')?b:(e===0||e==='0')?'1':b+sup(e);
+const lin=(a,b,v='n')=>{let s=a===0?'':a===1?v:a===-1?'-'+v:a+v;if(b!==0||a===0)s+=(b<0||a===0?'':'+')+b;return s};
+const mono=(c,t)=>{const body=t.filter(x=>x[1]!==0&&x[1]!=='0').map(([v,e])=>pw(v,e)).join('');if(!body)return''+c;return(c===1?'':c===-1?'-':c)+body};
+const poly=ts=>ts.filter(x=>x[0]!==0).map(([c,t],i)=>{const m=mono(Math.abs(c),t);return i===0?(c<0?'-':'')+m:(c<0?' − ':' + ')+m}).join('');
+const frac=(n,d)=>`<span class="fr"><span class="nu">${n}</span><span class="de">${d}</span></span>`;
+const par=(s,e)=>`(${s})${sup(e)}`;
+const V=['a','b','x','y','z','m','p','t','c','d'];
+const two=()=>{const a=pick(V);let b;do b=pick(V);while(b===a);return[a,b]};
+const fmt=h=>h.replace(/(<[^>]*>)|-/g,(m,t)=>t||'−');
+
+/* ---- feladatgenerátorok: {q,a,w:[rossz válaszok],r:szabály,s:[lépések]} ---- */
+const rMul=`a${sup('m')} · a${sup('n')} = a${sup('m+n')} (az alap marad, a kitevők összeadódnak)`;
+const rDiv=`a${sup('m')} : a${sup('n')} = a${sup('m−n')} (a kitevők kivonódnak, a ≠ 0)`;
+const rPP=`(a${sup('m')})${sup('n')} = a${sup('m·n')} (a kitevők szorzódnak)`;
+const rPR=`(a·b)${sup('n')} = a${sup('n')} · b${sup('n')} (minden tényezőt hatványozunk)`;
+const rFR=`(a/b)${sup('n')} = a${sup('n')} / b${sup('n')} (a számlálót és a nevezőt is hatványozzuk, b ≠ 0)`;
+
+function mulE(){const L=pick(V),m=R(2,8),n=R(2,8),a=pw(L,m+n);
+ return{q:`${pw(L,m)} · ${pw(L,n)}`,a,w:[pw(L,m*n),pw(L,Math.abs(m-n)),pw(L,m+n+1),pw(L,m+n-1),'2'+a],r:rMul,
+ s:[`${pw(L,m)} · ${pw(L,n)} = ${pw(L,m+'+'+n)}`,`${pw(L,m+'+'+n)} = ${a}`]}}
+function mulH1(){const[x,y]=two(),c1=R(2,6),c2=R(2,5),m=R(1,5),n=R(2,5),k=R(1,4),j=R(1,4);
+ const a=mono(c1*c2,[[x,m+n],[y,k+j]]);
+ return{q:`(${mono(c1,[[x,m],[y,k]])}) · (${mono(c2,[[x,n],[y,j]])})`,a,
+ w:[mono(c1+c2,[[x,m+n],[y,k+j]]),mono(c1*c2,[[x,m*n],[y,k*j]]),mono(c1*c2,[[x,m+n],[y,k*j]]),mono(c1*c2,[[x,m+n],[y,k]])],r:rMul,
+ s:[`Az együtthatókat összeszorozzuk: ${c1} · ${c2} = ${c1*c2}`,`${x} kitevői: ${m} + ${n} = ${m+n}; ${y} kitevői: ${k} + ${j} = ${k+j}`,`Eredmény: ${a}`]}}
+function mulH2(){const L=pick(V),v=pick(['n','k']),a1=R(1,6),b1=R(-4,6),a=pw(L,lin(2,a1+b1,v));
+ return{q:`${pw(L,lin(1,a1,v))} · ${pw(L,lin(1,b1,v))}`,a,
+ w:[pw(L,lin(1,a1+b1,v)),pw(L,lin(2,a1*b1,v)),pw(L,lin(2,a1+b1+1,v)),pw(L,lin(2,a1-b1,v)),pw(L,lin(1,a1*b1,v))],r:rMul,
+ s:[`Az alap ugyanaz (${L}), ezért a kitevőket összeadjuk: (${lin(1,a1,v)}) + (${lin(1,b1,v)})`,`${v} + ${v} = 2${v}; ${a1} + (${b1}) = ${a1+b1}`,`Eredmény: ${a}`]}}
+function divE(){const L=pick(V),n=R(2,5),m=n+R(1,5),a=pw(L,m-n);
+ return{q:`${pw(L,m)} : ${pw(L,n)}`,a,w:[pw(L,m+n),pw(L,m*n),pw(L,m-n+1),pw(L,m-n-1),pw(L,n-m)],r:rDiv,
+ s:[`${pw(L,m)} : ${pw(L,n)} = ${pw(L,m+'−'+n)}`,`${pw(L,m+'−'+n)} = ${a}`]}}
+function divH1(){const[x,y]=two(),d=R(2,5),qc=R(2,6),n=R(1,3),m=n+R(1,4),j=R(1,3),k=j+R(1,4);
+ const a=mono(qc,[[x,m-n],[y,k-j]]);
+ return{q:frac(mono(d*qc,[[x,m],[y,k]]),mono(d,[[x,n],[y,j]])),a,
+ w:[mono(d*qc-d,[[x,m-n],[y,k-j]]),mono(qc,[[x,m+n],[y,k+j]]),mono(qc,[[x,m-n],[y,k+j]]),mono(qc,[[x,m-n],[y,k]])],r:rDiv,
+ s:[`Az együtthatókat osztjuk: ${d*qc} : ${d} = ${qc}`,`${x} kitevői: ${m} − ${n} = ${m-n}; ${y} kitevői: ${k} − ${j} = ${k-j}`,`Eredmény: ${a}`]}}
+function divH2(){const L=pick(V),v=pick(['n','k']),d=R(2,5),qc=R(2,5),a1=R(3,9),b1=R(-3,2),a=mono(qc,[[L,a1-b1]]);
+ return{q:frac(mono(d*qc,[[L,lin(1,a1,v)]]),mono(d,[[L,lin(1,b1,v)]])),a,
+ w:[mono(qc,[[L,a1+b1]]),mono(qc,[[L,lin(2,a1-b1,v)]]),mono(d*qc-d,[[L,a1-b1]]),mono(qc,[[L,b1-a1]])],r:rDiv,
+ s:[`Az együtthatók: ${d*qc} : ${d} = ${qc}`,`A kitevők kivonódnak, a második kitevőt zárójelben kell kivonni: (${lin(1,a1,v)}) − (${lin(1,b1,v)}) = ${v} + ${a1} − ${v} ${b1<0?'+ '+(-b1):'− '+b1} = ${a1-b1}`,`Eredmény: ${a}`]}}
+function ppE(){const L=pick(V),m=R(2,6),n=R(2,5),a=pw(L,m*n);
+ return{q:par(pw(L,m),n),a,w:[pw(L,m+n),pw(L,m*n+m),pw(L,Math.abs(m-n)),pw(L,m*n-1)],r:rPP,
+ s:[`${par(pw(L,m),n)} = ${pw(L,m+'·'+n)}`,`${pw(L,m+'·'+n)} = ${a}`]}}
+function ppH1(){const L=pick(V),v=pick(['n','k']),a1=R(1,5),b=R(2,4),a=pw(L,lin(b,a1*b,v));
+ return{q:par(pw(L,lin(1,a1,v)),b),a,
+ w:[pw(L,lin(1,a1*b,v)),pw(L,lin(b,a1+b,v)),pw(L,lin(b,a1,v)),pw(L,lin(1,a1+b,v))],r:rPP,
+ s:[`A kitevőket összeszorozzuk: (${lin(1,a1,v)}) · ${b}`,`Minden tagot szorzunk (zárójel felbontása): ${b}${v} + ${a1*b}`,`Eredmény: ${a}`]}}
+function ppH2(){const L=pick(V),m=R(2,3),n=R(2,3),p=R(2,3),a=pw(L,m*n*p);
+ return{q:par(par(pw(L,m),n),p),a,w:[pw(L,m+n+p),pw(L,m*n+p),pw(L,m+n*p),pw(L,m*n*p+1)],r:rPP,
+ s:[`Belülről kifelé haladunk: ${par(pw(L,m),n)} = ${pw(L,m*n)}`,`${par(pw(L,m*n),p)} = ${pw(L,m*n+'·'+p)} = ${a}`]}}
+function prE(){const[x,y]=two(),n=R(2,5),a=pw(x,n)+pw(y,n);
+ return{q:par(x+y,n),a,w:[x+pw(y,n),pw(x,n)+y,n+x+y,pw(x,n)+'+'+pw(y,n)],r:rPR,
+ s:[`Mindkét tényezőt a ${n}. hatványra emeljük: ${par(x+y,n)} = ${pw(x,n)} · ${pw(y,n)}`,`Eredmény: ${a}`]}}
+function prH(){const[x,y]=two(),c=pick([-3,-2,2,3,4]),n=pick([2,3]),a1=R(1,3),b1=R(1,3),a=mono(c**n,[[x,a1*n],[y,b1*n]]);
+ return{q:par(mono(c,[[x,a1],[y,b1]]),n),a,
+ w:[mono(c*n,[[x,a1*n],[y,b1*n]]),mono(c**n,[[x,a1+n],[y,b1+n]]),mono(c**n,[[x,a1*n],[y,b1]]),mono(Math.abs(c**n),[[x,a1*n],[y,b1*n]]),mono(c**n,[[x,a1*n],[y,b1+n]])],r:rPR,
+ s:[`Az együtthatót is hatványozzuk: (${c})${sup(n)} = ${c**n}`,`${x}: ${par(pw(x,a1),n)} = ${pw(x,a1*n)}; ${y}: ${par(pw(y,b1),n)} = ${pw(y,b1*n)}`,`Eredmény: ${a}`]}}
+function frE(){const[x,y]=two(),n=R(2,5),a=frac(pw(x,n),pw(y,n));
+ return{q:par(frac(x,y),n),a,w:[frac(pw(x,n),y),frac(x,pw(y,n)),frac(n+x,n+y),frac(pw(x,2*n),pw(y,2*n))],r:rFR,
+ s:[`A számlálót és a nevezőt is a ${n}. hatványra emeljük`,`Eredmény: ${a}`]}}
+function frH(){const[x,y]=two(),c=pick([2,3,4,5]),d=pick([2,3,4,5]),n=pick([2,3]),a1=R(1,3),b1=R(1,3);
+ const a=frac(mono(c**n,[[x,a1*n]]),mono(d**n,[[y,b1*n]]));
+ return{q:par(frac(mono(c,[[x,a1]]),mono(d,[[y,b1]])),n),a,
+ w:[frac(mono(c*n,[[x,a1*n]]),mono(d*n,[[y,b1*n]])),frac(mono(c**n,[[x,a1*n]]),mono(d,[[y,b1*n]])),frac(mono(c**n,[[x,a1]]),mono(d**n,[[y,b1]])),frac(mono(c**n,[[x,a1*n]]),mono(d**n,[[y,b1+n]]))],r:rFR,
+ s:[`Számláló: ${par(mono(c,[[x,a1]]),n)} = ${mono(c**n,[[x,a1*n]])}`,`Nevező: ${par(mono(d,[[y,b1]]),n)} = ${mono(d**n,[[y,b1*n]])}`,`Eredmény: ${a}`]}}
+
+function nota(hard,kind){
+ kind=kind||pick(['p','m','d']);let A,B;
+ if(hard){A=[R(2,5),[[pick(['x','a','m']),R(1,2)]]];const w=pick(['y','b','n']);B=[R(2,6),[[w,R(1,2)]]]}
+ else{A=[1,[[pick(['x','a','m','y']),1]]];B=[R(2,9),[]]}
+ const sq=t=>[t[0]*t[0],t[1].map(([v,e])=>[v,e*2])];
+ const A2=sq(A),B2=sq(B),pr=[A[0]*B[0],A[1].concat(B[1])];
+ const sA=poly([A]),sB=poly([B]),pa=`(${sA})${sup(2)}`,pb=`(${sB})${sup(2)}`;
+ if(kind==='d'){const ans=poly([A2,[-B2[0],B2[1]]]);
+  return{q:`(${poly([A,B])}) · (${poly([A,[-B[0],B[1]]])})`,a:ans,
+  w:[poly([A2,B2]),poly([A2,[-2*pr[0],pr[1]],B2]),poly([[-A2[0],A2[1]],B2]),poly([A2,[-B[0],B[1]]])],
+  r:`(a + b) · (a − b) = a${sup(2)} − b${sup(2)}`,
+  s:[`Itt a = ${sA}, b = ${sB}`,`${pa} − ${pb}`,`Eredmény: ${ans}`]}}
+ const s=kind==='p'?1:-1,m=[2*s*pr[0],pr[1]],ans=poly([A2,m,B2]);
+ const sg=s>0?'+':'−';
+ return{q:`(${poly([A,[s*B[0],B[1]]])})${sup(2)}`,a:ans,
+ w:[poly([A2,B2]),poly([A2,[-m[0],m[1]],B2]),poly([A2,[s*pr[0],pr[1]],B2]),poly([A2,m,[-B2[0],B2[1]]])],
+ r:`(a ${sg} b)${sup(2)} = a${sup(2)} ${sg} 2ab + b${sup(2)}`,
+ s:[`Itt a = ${sA}, b = ${sB}`,`${pa} ${sg} 2 · (${sA}) · (${sB}) + ${pb}`,`Eredmény: ${ans}`]}}
+
+const rNG=`a${sup('0')} = 1 (a ≠ 0) és a${sup('−n')} = 1 / a${sup('n')}`;
+function ngE(){const[x,y]=two(),m=R(2,7),n=R(2,7),c=R(2,5),k=R(1,3),v=R(0,2);
+ if(v===0){const a=pw(x,m-n);return{q:`${pw(x,m)} · ${pw(x,-n)}`,a,w:[pw(x,m+n),pw(x,n-m),pw(x,-(m+n)),pw(x,-m*n)],r:rMul,
+  s:[`Azonos alap, a kitevők összeadódnak: ${m} + (−${n}) = ${m-n}`,`Eredmény: ${a}`]}}
+ if(v===1){const e=mono(c,[[x,m],[y,k]]);return{q:par(e,0),a:'1',w:['0',''+c,e,pw(x,m)],r:rNG,
+  s:[`Minden nullától különböző kifejezés nulladik hatványa 1 (x ≠ 0, y ≠ 0)`,`Eredmény: 1`]}}
+ const a=frac('1',pw(x,n));
+ return{q:pw(x,-n),a,w:[frac('-1',pw(x,n)),pw(x,n),'-'+pw(x,n),frac('1',n+x)],r:rNG,
+  s:[`A negatív kitevő a reciprokot jelenti: ${pw(x,-n)} = 1 / ${pw(x,n)}`,`Eredmény: ${a}`]}}
+function ngH1(){const[x,y]=two(),d=R(2,5),qc=R(2,6),m=R(1,3),n=m+R(1,4),j=R(1,3),k=j+R(1,4);
+ const a=mono(qc,[[x,m-n],[y,k-j]]);
+ return{q:frac(mono(d*qc,[[x,m],[y,k]]),mono(d,[[x,n],[y,j]])),a,
+ w:[mono(qc,[[x,n-m],[y,k-j]]),mono(qc,[[x,m+n],[y,k-j]]),mono(d*qc-d,[[x,m-n],[y,k-j]]),mono(qc,[[x,m-n],[y,j-k]])],r:rDiv+'; '+rNG,
+ s:[`Az együtthatók: ${d*qc} : ${d} = ${qc}`,`${x} kitevői: ${m} − ${n} = ${m-n} (negatív is lehet!); ${y} kitevői: ${k} − ${j} = ${k-j}`,`Eredmény: ${a}`]}}
+function ngH2(){const[x,y]=two(),n=R(2,3),a1=R(1,3),b1=R(1,3),a=pw(x,a1*n)+pw(y,-b1*n);
+ return{q:par(pw(x,a1)+pw(y,-b1),n),a,w:[pw(x,a1*n)+pw(y,b1*n),pw(x,a1+n)+pw(y,-b1-n),pw(x,a1*n)+pw(y,-b1-n),pw(x,-a1*n)+pw(y,-b1*n)],r:rPR+'; '+rPP,
+ s:[`Minden tényezőt hatványozunk, a kitevők szorzódnak`,`${x}: ${a1}·${n} = ${a1*n}; ${y}: (−${b1})·${n} = ${-b1*n}`,`Eredmény: ${a}`]}}
+function ngH3(){const L=pick(V),v=pick(['n','k']),a1=R(-4,4),b1=R(-3,5),a=pw(L,a1+b1);
+ return{q:`${pw(L,lin(1,a1,v))} · ${pw(L,lin(-1,b1,v))}`,a,w:[pw(L,lin(1,a1+b1,v)),pw(L,lin(2,a1+b1,v)),pw(L,lin(-2,a1+b1,v)),pw(L,a1-b1),pw(L,-(a1+b1)||7)],r:rMul,
+ s:[`Az alap azonos, a kitevők összeadódnak: (${lin(1,a1,v)}) + (${lin(-1,b1,v)})`,`A ${v} és a −${v} kiesik: ${a1} + (${b1}) = ${a1+b1}`,`Eredmény: ${a}`+(a1+b1===0?' (nulladik hatvány!)':'')]}}
+
+function thHtml(k){
+ const r=s=>`<div class="rule">${s}</div>`,S=sup;
+ let h=`<div class="card th"><h2>${B[k].e} ${B[k].n} – összefoglaló</h2>`;
+ if(k==='pw')h+=`<h3>Azonos alapú hatványok szorzása</h3>${r(rMul)}<p>Példa: x${S(3)} · x${S(4)} = x${S(7)}; 3a${S(2)} · 4a${S(5)} = 12a${S(7)}</p>
+ <h3>Azonos alapú hatványok osztása</h3>${r(rDiv)}<p>Példa: x${S(7)} : x${S(4)} = x${S(3)}; 12y${S(9)} : 4y${S(2)} = 3y${S(7)}</p>
+ <h3>Hatvány hatványozása</h3>${r(rPP)}<p>Példa: (x${S(3)})${S(4)} = x${S(12)}</p>
+ <h3>Szorzat hatványozása</h3>${r(rPR)}<p>Példa: (2xy${S(2)})${S(3)} = 8x${S(3)}y${S(6)} (az együtthatót is hatványozzuk!)</p>
+ <h3>Tört hatványozása</h3>${r(rFR)}<p>Példa: (${frac('2x','3y')})${S(2)} = ${frac('4x'+S(2),'9y'+S(2))}</p>
+ <h3>Nulladik és negatív kitevő</h3>${r('a'+S(0)+' = 1 (a ≠ 0)')}${r('a'+S('−n')+' = 1 / a'+S('n')+' (a ≠ 0)')}
+ <p>Miért igaz? x${S(5)} : x${S(5)} = 1, másrészt a kitevők kivonásával x${S(0)}. Példa: x${S('−2')} = 1/x${S(2)}; (2/3)${S('−2')} = (3/2)${S(2)} = 9/4; (5x${S(2)})${S(0)} = 1.</p>
+ <h3 class="warn">Gyakori hibák</h3><ul><li>x${S(3)} · x${S(4)} ≠ x${S(12)} – szorzásnál a kitevők összeadódnak.</li><li>(2x)${S(3)} ≠ 2x${S(3)} – a 2-t is a harmadikra kell emelni: 8x${S(3)}.</li><li>(x${S(2)})${S(3)} ≠ x${S(5)} – hatványozásnál a kitevők szorzódnak.</li><li>Kitevők kivonásánál zárójelezz: (n+5) − (n−2) = n+5−n+2 = 7.</li><li>x${S('−2')} nem negatív szám, hanem 1/x${S(2)}.</li></ul>`;
+ else h+=`<h3>Összeg négyzete</h3>${r('(a + b)'+S(2)+' = a'+S(2)+' + 2ab + b'+S(2))}<p>Példa: (2x + 3)${S(2)} = 4x${S(2)} + 12x + 9</p>
+ <h3>Különbség négyzete</h3>${r('(a − b)'+S(2)+' = a'+S(2)+' − 2ab + b'+S(2))}<p>Példa: (3a − 2b)${S(2)} = 9a${S(2)} − 12ab + 4b${S(2)}</p>
+ <h3>Összeg és különbség szorzata</h3>${r('(a + b) · (a − b) = a'+S(2)+' − b'+S(2))}<p>Példa: (5x + 4)(5x − 4) = 25x${S(2)} − 16</p>
+ <h3>Visszafelé is használható</h3><p>x${S(2)} − 49 = (x + 7)(x − 7). Fejszámolásnál is hasznos: 51${S(2)} = (50 + 1)${S(2)} = 2601; 49 · 51 = (50 − 1)(50 + 1) = 2499.</p>
+ <h3 class="warn">Gyakori hibák</h3><ul><li>(a + b)${S(2)} ≠ a${S(2)} + b${S(2)} – a középső tag, a 2ab nem maradhat el.</li><li>A középső tag 2ab, nem csak ab.</li><li>(a − b)${S(2)} végén +b${S(2)} áll, nem −b${S(2)}.</li><li>(a + b)(a − b)-nél nincs középső tag, és a végeredmény különbség.</li><li>Ha a tagok együtthatósak, azt is négyzetre kell emelni: (3x)${S(2)} = 9x${S(2)}.</li></ul>`;
+ return h+`<p><button class="btn" onclick="start('${k}')">Gyakorlás indítása</button></p></div>`;
+}
+
+
+/* ---- kombinált (több azonosságos) feladatok ---- */
+const ch=(t,i,d)=>t.map(([v,e],j)=>[v,j===i?e+d:e]);
+const wm=(c,t)=>[mono(c,ch(t,0,1)),mono(c,ch(t,t.length-1,-1)),mono(c,ch(t,0,-1)),mono(c+1,t),mono(-c,t),mono(c,ch(t,t.length-1,2)),mono(c,ch(t,t.length-1,1))];
+const rK=`Haladj zárójelből kifelé: először hatványozunk (a kitevők szorzódnak, szorzatnál/törtnél minden tényezőre), utána azonos alapú hatványokat szorzunk (a kitevők összeadódnak) vagy osztunk (kivonódnak)`;
+function kP1(){const[x,y]=two(),c1=pick([2,3]),c2=R(2,4),a=R(1,3),b=R(1,4),k=R(1,3),n=pick([2,3]),c=c1**n*c2,t=[[x,a*n+b],[y,k]];
+ return{q:`${par(mono(c1,[[x,a]]),n)} · ${mono(c2,[[x,b],[y,k]])}`,a:mono(c,t),w:[mono(c1*n*c2,t),mono(c,[[x,a+n+b],[y,k]]),...wm(c,t)],r:rK,
+ s:[`Először hatványozunk: ${par(mono(c1,[[x,a]]),n)} = ${mono(c1**n,[[x,a*n]])}`,`Majd szorzunk: az együtthatók ${c1**n} · ${c2} = ${c}; ${x} kitevői: ${a*n} + ${b} = ${a*n+b}`,`Eredmény: ${mono(c,t)}`]}}
+function kP2(){const[x,y]=two(),c=pick([2,3]),n=pick([2,3]),a=R(1,3),b=R(1,3),p=c**n,d=pick(p===8?[2,4,8]:p===4?[2,4]:p===9?[3,9]:[3,9,27]),m=R(1,a*n),j=R(1,b*n),cc=p/d,t=[[x,a*n-m],[y,b*n-j]];
+ return{q:frac(par(mono(c,[[x,a],[y,b]]),n),mono(d,[[x,m],[y,j]])),a:mono(cc,t),w:wm(cc,t),r:rK,
+ s:[`A számlálót hatványozzuk: ${par(mono(c,[[x,a],[y,b]]),n)} = ${mono(p,[[x,a*n],[y,b*n]])}`,`Osztunk: ${p} : ${d} = ${cc}; ${x}: ${a*n} − ${m} = ${a*n-m}; ${y}: ${b*n} − ${j} = ${b*n-j}`,`Eredmény: ${mono(cc,t)}`]}}
+function kP3(){const[x,y]=two(),n=pick([2,3]),a=R(1,3),b=R(1,3),c=R(1,6),d=R(1,6),t=[[x,a*n-d],[y,c-b*n]];
+ return{q:`${par(frac(pw(x,a),pw(y,b)),n)} · ${frac(pw(y,c),pw(x,d))}`,a:mono(1,t),w:[mono(1,[[x,a*n+d],[y,c+b*n]]),...wm(1,t)],r:rK,
+ s:[`Hatványozunk: ${par(frac(pw(x,a),pw(y,b)),n)} = ${frac(pw(x,a*n),pw(y,b*n))}`,`Szorzunk, azonos alapokat összevonunk: ${x}: ${a*n} − ${d} = ${a*n-d}; ${y}: ${c} − ${b*n} = ${c-b*n}`,`Eredmény: ${mono(1,t)} (negatív kitevő is lehet)`]}}
+function kP4(){const L=pick(V),v=pick(['n','k']),a=R(1,4),b=pick([2,3]),c=R(-3,5),r=a*b+c;
+ return{q:`${par(pw(L,lin(1,a,v)),b)} · ${pw(L,lin(-b,c,v))}`,a:pw(L,r),w:[pw(L,lin(1,r,v)),pw(L,lin(b,a+c,v)),pw(L,a+b+c),pw(L,lin(b,r,v)),pw(L,a*b-c),pw(L,r+1)],r:rK,
+ s:[`Hatványozunk: ${par(pw(L,lin(1,a,v)),b)} = ${pw(L,lin(b,a*b,v))}`,`Szorzunk, a kitevők összeadódnak: (${lin(b,a*b,v)}) + (${lin(-b,c,v)}) = ${r}`,`Eredmény: ${pw(L,r)}${r===0?' (nulladik hatvány!)':''}`]}}
+function kP5(){const[x,y]=two(),c1=pick([2,3]),c2=2,a=R(1,3),b=R(1,3),n=pick([2,3]),m=pick([2,3]),c=c1**n*c2**m,t=[[x,a*n],[y,n+b*m]];
+ return{q:`${par(mono(c1,[[x,a],[y,1]]),n)} · ${par(mono(c2,[[y,b]]),m)}`,a:mono(c,t),w:[mono(c1*n*c2*m,t),...wm(c,t)],r:rK,
+ s:[`Mindkét tényezőt hatványozzuk: ${mono(c1**n,[[x,a*n],[y,n]])} és ${mono(c2**m,[[y,b*m]])}`,`Szorzunk: ${c1**n} · ${c2**m} = ${c}; ${y} kitevői: ${n} + ${b*m} = ${n+b*m}`,`Eredmény: ${mono(c,t)}`]}}
+function kP6(){const[x,y]=two(),a=R(1,3),b=R(1,3),c=R(1,3),d=R(1,3),n=pick([2,3]),m=pick([2,3]),t=[[x,a*n-c*m],[y,b*n-d*m]];
+ return{q:frac(par(pw(x,a)+pw(y,b),n),par(pw(x,c)+pw(y,d),m)),a:mono(1,t),w:wm(1,t),r:rK,
+ s:[`Számláló: ${mono(1,[[x,a*n],[y,b*n]])}; nevező: ${mono(1,[[x,c*m],[y,d*m]])}`,`Osztunk: ${x}: ${a*n} − ${c*m} = ${a*n-c*m}; ${y}: ${b*n} − ${d*m} = ${b*n-d*m}`,`Eredmény: ${mono(1,t)}`]}}
+function kP7(){const L=pick(V),c=R(2,6),a=R(1,3),m=R(2,7),n=R(2,7);
+ return{q:`${par(mono(c,[[L,a]]),0)} · ${pw(L,m)} · ${pw(L,-n)}`,a:pw(L,m-n),w:[...wm(1,[[L,m-n]]),pw(L,m+n),mono(c,[[L,m-n]])],r:rK+'; a'+sup(0)+' = 1',
+ s:[`A nulladik hatvány: ${par(mono(c,[[L,a]]),0)} = 1`,`A kitevők összeadódnak: ${m} + (−${n}) = ${m-n}`,`Eredmény: ${pw(L,m-n)}`]}}
+function kP8(){const[x,y]=two(),a=R(1,3),b=R(1,3),n=R(1,3),c=R(1,6),d=R(1,6),t=[[x,c-a*n],[y,d-b*n]];
+ return{q:`${par(pw(x,a)+pw(y,b),-n)} · ${pw(x,c)}${pw(y,d)}`,a:mono(1,t),w:[mono(1,[[x,c+a*n],[y,d+b*n]]),...wm(1,t)],r:rK+'; a'+sup('−n')+' = 1 / a'+sup('n'),
+ s:[`Hatványozunk: ${par(pw(x,a)+pw(y,b),-n)} = ${mono(1,[[x,-a*n],[y,-b*n]])}`,`Szorzunk: ${x}: ${c} + (${-a*n}) = ${c-a*n}; ${y}: ${d} + (${-b*n}) = ${d-b*n}`,`Eredmény: ${mono(1,t)}`]}}
+const kk=t=>t[1].map(([v,e])=>v+e).sort().join('');
+const dg=(t,L)=>t[1].filter(([v])=>v===L).reduce((s,[,e])=>s+e,0);
+function comb(ts,x,y){const m=new Map();ts.forEach(([c,v])=>{const k=kk([c,v]);m.has(k)?m.get(k)[0]+=c:m.set(k,[c,v])});
+ return[...m.values()].filter(t=>t[0]!==0).sort((p,q)=>dg(q,x)-dg(p,x)||dg(p,y)-dg(q,y))}
+const pv=ts=>[poly(ts.map((t,i)=>i?t:[t[0]*2,t[1]])),poly(ts.map((t,i)=>i===ts.length-1?[-t[0],t[1]]:t)),poly(ts.map((t,i)=>i?t:[t[0]+1,t[1]])),poly(ts.map(t=>[t[0]+2,t[1]])),poly(ts.map(t=>[-t[0],t[1]]))];
+function kN(){const[x,y]=two(),A=[R(1,3),[[x,1]]],B=Math.random()<.5?[R(2,6),[]]:[R(2,5),[[y,1]]];
+ const sq=t=>[t[0]*t[0],t[1].map(([v,e])=>[v,e*2])],A2=sq(A),B2=sq(B),pr=[A[0]*B[0],A[1].concat(B[1])],Bm=[-B[0],B[1]];
+ const I=shuf([['('+poly([A,B])+')'+sup(2),[A2,[2*pr[0],pr[1]],B2]],['('+poly([A,Bm])+')'+sup(2),[A2,[-2*pr[0],pr[1]],B2]],['('+poly([A,B])+') · ('+poly([A,Bm])+')',[A2,[-B2[0],B2[1]]]]]).slice(0,2),op=pick([1,-1]);
+ const [[q1,X1],[q2,X2]]=I,res=comb([...X1,...X2.map(([c,v])=>[op*c,v])],x,y),a=poly(res),sg=op>0?'+':'−';
+ const w=[...pv(res)];if(op<0)w.unshift(poly(comb([...X1,[-X2[0][0],X2[0][1]],...X2.slice(1)],x,y)));
+ return{q:`${q1} ${sg} ${q2}`,a,w:w.filter(z=>z),r:`(a ± b)${sup(2)} = a${sup(2)} ± 2ab + b${sup(2)}; (a + b)(a − b) = a${sup(2)} − b${sup(2)}`,
+ s:[`${q1} = ${poly(X1)}`,`${q2} = ${poly(X2)}`,`Összevonás${op<0?' (a kivonandó minden tagjának előjele megváltozik!)':''}: ${poly(X1)} ${sg} (${poly(X2)})`,`Eredmény: ${a}`]}}
+
+const GEN={pw:{a:[mulE,divE,ppE,prE,frE,ngE],c:[mulH1,mulH2,divH1,divH2,ppH1,ppH2,prH,frH,ngH1,ngH2,ngH3],k:[kP1,kP2,kP3,kP4,kP5,kP6,kP7,kP8]},no:{a:[()=>nota(0)],c:[()=>nota(1)],k:[kN]}};
+const B={pw:{n:'Hatványazonosságok',e:'🧮',d:'Azonos alapú hatványok szorzása és osztása, hatvány, szorzat és tört hatványozása, negatív és nulladik kitevő, többlépéses feladatok.'},
+ no:{n:'Nevezetes azonosságok',e:'✨',d:'Összeg és különbség négyzete, összeg és különbség szorzata, valamint ezek kombinációi.'}};
+const LVL=[['a','🌱','Alap'],['c','🚀','Összetett'],['k','🧩','Kombinált'],['m','🎲','Vegyes']],LN={a:'alap',c:'összetett',k:'kombinált'},BASE={a:10,c:15,k:20};
+const TITLES=['Kezdő hatványozó','Kitevő-kezdő','Azonosság-tanonc','Zárójelbontó','Hatvány-harcos','Négyzet-király','Algebra-bajnok','Hatványvadász-legenda'];
+const mk=()=>({pw:{a:0,c:0,k:0},no:{a:0,c:0,k:0}});
+let S={xp:0,best:0,perf:0,rounds:0,t:{},d:mk(),b:{}};
+try{const x=JSON.parse(localStorage.getItem('hv4'));if(x&&x.d)S=Object.assign(S,x)}catch(e){}
+const save=()=>{try{localStorage.setItem('hv4',JSON.stringify(S))}catch(e){}};
+const lvl=()=>Math.floor(S.xp/100)+1,mast=(s,b)=>['a','c','k'].every(l=>s.d[b][l]>=10);
+const BADGES=[
+['first','🌱','Első lépés','Az első helyes válasz',s=>s.d.pw.a+s.d.pw.c+s.d.pw.k+s.d.no.a+s.d.no.c+s.d.no.k>=1],
+['s5','🔥','Tűzben','5-ös sorozat egy körben',s=>s.best>=5],
+['perf','💎','Hibátlan kör','10/10 helyes válasz',s=>s.perf>=1],
+['kpw','🧩','Kombinátor','20 helyes kombinált hatványos feladat',s=>s.d.pw.k>=20],
+['kno','🔗','Azonosság-láncoló','10 helyes kombinált nevezetes feladat',s=>s.d.no.k>=10],
+['mpw','🧮','Hatvány-mester','10 helyes válasz mindhárom szinten (hatványazonosságok)',s=>mast(s,'pw')],
+['mno','✨','Négyzet-király','10 helyes válasz mindhárom szinten (nevezetes azonosságok)',s=>mast(s,'no')],
+['all','🏆','Mindent tudó','Mindkét blokk mestere',s=>mast(s,'pw')&&mast(s,'no')],
+['l5','⭐','5. szint','Érj el 500 XP-t',s=>s.xp>=500]];
+let Q=null,view='home',topic=null,RS=0;const DL={pw:'a',no:'a'};
+const seg=b=>`<div class="dl">Nehézségi szint</div><div class="seg">${LVL.map(([k,i,l])=>`<button class="${DL[b]===k?'on':''}" onclick="DL.${b}='${k}';render()">${i} ${l}</button>`).join('')}</div>`;
+const prog=b=>{const d=S.d[b],l=DL[b],P=v=>`<div class="bar" style="margin:10px 0 2px"><i style="width:${v}%"></i></div>`;
+ if(l==='m')return P(Math.round(['a','c','k'].reduce((p,k)=>p+Math.min(d[k],10),0)/30*100))+`<div class="hint">Alap: ${d.a} · Összetett: ${d.c} · Kombinált: ${d.k} megoldott ${mast(S,b)?'· ⭐':''}</div>`;
+ return P(Math.min(100,d[l]*10))+`<div class="hint">${LN[l][0].toUpperCase()+LN[l].slice(1)}: ${d[l]} megoldott feladat ${d[l]>=10?'· ⭐':''}</div>`};
+function resetAll(){S={xp:0,best:0,perf:0,rounds:0,t:{},d:mk(),b:{}};RS=0;save();render()}
+function toast(m){const t=document.createElement('div');t.className='toast';t.innerHTML=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function award(xp){const l0=lvl();S.xp+=xp;const m=[];
+ if(lvl()>l0)m.push(`🎉 Szintet léptél: <b>${lvl()}. szint – ${TITLES[Math.min(lvl()-1,7)]}</b>`);
+ for(const[id,e,n,d,f] of BADGES)if(!S.b[id]&&f(S)){S.b[id]=1;m.push(`${e} Új jelvény: <b>${n}</b>`)}
+ save();if(m.length)toast(m.join('<br>'))}
+const topbar=()=>{const l=lvl();return`<div class="top"><span class="lvl" onclick="go('home')">⚡ ${l}. szint</span><div class="xpw"><div class="xpt"><span>${TITLES[Math.min(l-1,7)]}</span><span>${S.xp} XP</span></div><div class="bar"><i style="width:${S.xp%100}%"></i></div></div></div>`};
+const back=()=>`<p style="margin-top:14px"><button class="btn sec sm" onclick="go('home')">← Vissza</button></p>`;
+function go(v,t){view=v;topic=t||null;render();window.scrollTo(0,0)}
+function render(){$('#app').innerHTML=topbar()+({home,block:blockView,badges,quiz,end:endView}[view])()}
+function results(){let any=false;return Object.entries(B).map(([b,x])=>`<b>${x.e} ${x.n}</b>`+['a','c','k'].map(l=>{const t=S.t[b+l],p=t?Math.round(t[0]/t[1]*100):0;if(t)any=true;
+ return`<div class="bt"><span>${LVL.find(z=>z[0]===l)[1]} ${LVL.find(z=>z[0]===l)[2]}</span><div class="bar"><i style="width:${p}%"></i></div><span>${t?p+'% ('+t[0]+'/'+t[1]+')':'–'}</span></div>`}).join('')).join('<br>')+(any?'':'<p class="hint">Még nincs eredményed – kezdj egy kört!</p>')}
+function home(){
+ return`<h1>⚡ Hatványvadász</h1><p class="sub">Gyakorold az azonosságokat, gyűjts XP-t, szerezz jelvényeket! Válassz blokkot és nehézségi szintet.</p>`+
+ Object.entries(B).map(([k,b])=>`<div class="card" style="margin-top:14px"><h2 style="margin-top:0">${b.e} ${b.n}</h2><p class="sub">${b.d}</p>${seg(k)}${prog(k)}
+ <div class="row" style="margin-top:12px"><button class="btn" onclick="start('${k}')">Gyakorlás indítása (10 feladat)</button><button class="btn sec" onclick="go('block','${k}')">📖 Összefoglaló</button></div></div>`).join('')+
+ `<div class="grid" style="margin-top:14px"><div class="card tc" onclick="go('badges')"><div class="ic">🏅</div><b>Jelvényeim</b><p class="hint">${Object.keys(S.b).length}/${BADGES.length} megszerezve</p></div></div>
+ <h2>📊 Eredményeim</h2><div class="card">${results()}</div>
+ <details class="card"><summary>🧭 Hogyan fogjak hozzá egy összetett feladathoz?</summary><ol><li><b>Zárójelből kifelé haladj:</b> először a hatványozások, utána a szorzás/osztás.</li><li><b>Hatványt hatványozol?</b> → kitevők szorzása. <b>Szorzatot vagy törtet?</b> → minden tényezőt (számlálót és nevezőt is) hatványozz, az együtthatót is.</li><li><b>Azonos alapú hatványokat szorzol/osztasz?</b> → kitevők összeadása/kivonása. Kivonásnál a kivonandó kitevőt zárójelezd!</li><li><b>Kéttagú négyzete?</b> → (a ± b)² = a² ± 2ab + b². <b>Összeg szorozva különbséggel?</b> → a² − b². Kivonásnál a zárójel minden tagjának előjele megváltozik.</li></ol></details>
+ <p class="hint" style="margin-top:14px">${RS?`Biztosan törlöd az összes haladásodat? <button class="btn sm" style="background:var(--bad)" onclick="resetAll()">Igen, törlés</button> <button class="btn sec sm" onclick="RS=0;render()">Mégsem</button>`:`<button class="btn sec sm" onclick="RS=1;render()">Haladás törlése</button>`}</p>`}
+const blockView=()=>back()+thHtml(topic);
+function badges(){return back()+`<h1>🏅 Jelvényeim</h1><p class="sub">Legjobb sorozat: ${S.best} 🔥 · Játszott körök: ${S.rounds}</p><div class="bd">${BADGES.map(([id,e,n,d])=>`<div class="b ${S.b[id]?'':'off'}"><div class="e">${e}</div><b>${n}</b><small>${d}</small></div>`).join('')}</div>`}
+
+function start(blk,lv0){Q={blk,lv0:lv0||DL[blk],seen:[],i:0,hearts:3,ok:0,streak:0,xp0:S.xp,cur:null,done:false,hint:false};S.rounds++;next()}
+function next(){
+ if(Q.i>=10||Q.hearts<=0){if(Q.ok===10&&Q.hearts>0)S.perf++;award(Q.ok===10?20:0);view='end';return render()}
+ const lv=Q.lv0==='m'?pick(['a','c','k']):Q.lv0;let c,n=0;
+ do{c=pick(GEN[Q.blk][lv])();c.lv=lv;c.ca=fmt(c.a);c.wr=[...new Set(shuf(c.w).map(fmt))].filter(x=>x&&x!==c.ca)}
+ while((c.wr.length<3||Q.seen.includes(fmt(c.q)))&&++n<80);
+ Q.seen.push(fmt(c.q));c.opts=shuf([c.ca,...c.wr.slice(0,3)]);
+ Q.cur=c;Q.done=false;Q.hint=false;Q.sel=-1;view='quiz';render()}
+function quiz(){const c=Q.cur,h='❤️'.repeat(Q.hearts)+'🖤'.repeat(3-Q.hearts),ins=Q.blk==='no'?'Bontsd fel a zárójeleket, vond össze!':'Írd a legegyszerűbb alakra!';
+ let b=`<div class="row" style="justify-content:space-between;margin:14px 0 8px"><button class="btn sec sm" onclick="go('home')">✕ Kilépés</button><span>${h}</span><span>🔥 ${Q.streak}</span><span class="hint">${Q.i+(Q.done?0:1)}/10</span></div><div class="bar"><i style="width:${Q.i/10*100}%"></i></div>
+ <div class="card" style="margin-top:12px"><div class="hint">${B[Q.blk].e} ${B[Q.blk].n} · ${LN[c.lv]} · ${ins}</div><div class="expr">${fmt(c.q)}</div>
+ <div class="opts">${c.opts.map((o,i)=>`<button class="btn ${Q.done?(o===c.ca?'good':(i===Q.sel?'wrong':'')):''}" ${Q.done?'disabled':''} onclick="ans(${i})">${o}</button>`).join('')}</div>
+ ${Q.done?'':`<div class="row" style="margin-top:10px"><button class="btn sec sm" onclick="Q.hint=true;render()">💡 Tipp (−5 XP)</button></div>`}
+ ${Q.hint&&!Q.done?`<div class="fb" style="background:var(--pri2)">💡 ${fmt(c.r)}</div>`:''}</div>`;
+ if(Q.done)b+=`<div class="fb ${Q.right?'ok':'no'}"><b>${Q.right?'✅ Helyes!':'❌ Nem egészen.'}</b> ${Q.msg||''}<p>Helyes válasz: <b class="ans">${c.ca}</b></p><p><b>Szabály:</b> ${fmt(c.r)}</p><div class="ex"><b>📝 A megoldás lépései</b><ol>${c.s.map(s=>`<li>${fmt(s)}</li>`).join('')}</ol></div><p><button class="btn" onclick="next()">${Q.i>=10||Q.hearts<=0?'Eredmény →':'Tovább →'}</button></p></div>`;
+ return b}
+function ans(i){if(Q.done)return;const c=Q.cur,ok=c.opts[i]===c.ca,key=Q.blk+c.lv,t=S.t[key]||[0,0];Q.sel=i;Q.done=true;Q.right=ok;Q.i++;t[1]++;
+ if(ok){t[0]++;Q.ok++;Q.streak++;if(Q.streak>S.best)S.best=Q.streak;
+  const g=Math.max(5,BASE[c.lv]-(Q.hint?5:0)+Math.min(Q.streak-1,5)*2);Q.msg=`+${g} XP`;S.d[Q.blk][c.lv]++;S.t[key]=t;Q.hint=false;award(g)}
+ else{Q.streak=0;Q.hearts--;Q.msg='';S.t[key]=t;save()}
+ render();const f=document.querySelector('.fb.ok,.fb.no');if(f&&f.scrollIntoView)f.scrollIntoView({block:'nearest',behavior:'smooth'})}
+function endView(){const bonus=Q.ok===10?' (+20 XP hibátlan bónusz!)':'';return`<div class="card" style="margin-top:16px;text-align:center"><div class="big">${Q.hearts<=0?'💔':Q.ok>=6?'🏆':'👍'}</div><h1>${Q.hearts<=0?'Elfogytak a szívek':'Kör vége!'}</h1><p>Helyes válaszok: <b>${Q.ok}</b> · Szerzett XP: <b>${S.xp-Q.xp0}</b>${bonus}</p><p class="hint">${Q.ok>=6?'Szép munka! Próbáld ki a következő nehézségi szintet is.':'Nézd át újra az összefoglalót, és próbáld újra!'}</p><div class="row" style="justify-content:center"><button class="btn" onclick="start(Q.blk,Q.lv0)">Új kör</button><button class="btn sec" onclick="go('home')">Főmenü</button></div></div>`}
+render();
+</script>
+</body>
+</html>

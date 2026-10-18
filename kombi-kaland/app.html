@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kombi-Kaland – kombinatorika gyakorló</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f4ff;--card:#fff;--ink:#1f1b3a;--mut:#6b6788;--pri:#6c4cf1;--pri2:#ece8ff;--ok:#1fa971;--okbg:#e3f7ee;--bad:#e5484d;--badbg:#fde8e9;--gold:#f5a524;--bd:#dedaf2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15132a;--card:#211e3d;--ink:#efedff;--mut:#a5a1c8;--pri:#9a82ff;--pri2:#2e2958;--ok:#43d19a;--okbg:#17382f;--bad:#ff7a7f;--badbg:#44202a;--gold:#ffc24d;--bd:#3a3566}}
+:root[data-theme="dark"]{--bg:#15132a;--card:#211e3d;--ink:#efedff;--mut:#a5a1c8;--pri:#9a82ff;--pri2:#2e2958;--ok:#43d19a;--okbg:#17382f;--bad:#ff7a7f;--badbg:#44202a;--gold:#ffc24d;--bd:#3a3566}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:760px;margin:0 auto;padding:12px 14px 40px}
+.top{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 14px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.lvl{font-weight:800;background:var(--pri);color:#fff;border-radius:12px;padding:4px 10px;white-space:nowrap}
+.xpw{flex:1;min-width:0}.xpt{font-size:12px;color:var(--mut);display:flex;justify-content:space-between;gap:6px}
+.bar{height:10px;background:var(--pri2);border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--gold));border-radius:99px;transition:width .5s}
+h1{font-size:24px;margin:18px 0 4px}h2{font-size:19px;margin:20px 0 8px}p{margin:6px 0}
+.sub{color:var(--mut);margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px}
+.tc{cursor:pointer;transition:transform .15s}.tc:hover{transform:translateY(-2px);border-color:var(--pri)}
+.tc b{font-size:16px}.tc .ic{font-size:26px}
+.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 16px;background:var(--pri);color:#fff;cursor:pointer}
+.btn.sec{background:var(--pri2);color:var(--pri)}.btn.sm{padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.f{background:var(--pri2);border-radius:10px;padding:8px 12px;font-size:18px;margin:8px 0;overflow-x:auto}
+.bn{display:inline-flex;align-items:center;vertical-align:middle;font-size:.9em}.bn:before{content:"(";font-size:2em;font-weight:200}.bn:after{content:")";font-size:2em;font-weight:200}
+.bn span{display:flex;flex-direction:column;text-align:center;line-height:1.1;margin:0 2px;font-style:italic}
+input[type=text]{font:inherit;font-size:20px;width:100%;padding:10px 12px;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--ink)}
+input:focus{outline:none;border-color:var(--pri)}
+.q{font-size:18px}.fb{border-radius:12px;padding:12px;margin-top:12px;animation:pop .3s}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}.fb.no{background:var(--badbg);border:1px solid var(--bad)}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.opts{display:grid;gap:8px;margin-top:10px}.opts .btn{text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--bd)}
+.opts .btn:hover:not(:disabled){border-color:var(--pri)}.opts .good{border-color:var(--ok)!important;background:var(--okbg)!important}.opts .wrong{border-color:var(--bad)!important;background:var(--badbg)!important}
+.bd{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.b{text-align:center;padding:12px 8px;border-radius:14px;border:1px solid var(--bd);background:var(--card)}.b.off{opacity:.4;filter:grayscale(1)}.b .e{font-size:30px}.b small{color:var(--mut);display:block}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;z-index:9;animation:pop .3s;max-width:90%;text-align:center}
+.big{font-size:44px;text-align:center}.hint{color:var(--mut);font-size:14px}
+details{margin-top:8px}summary{cursor:pointer;font-weight:700}
+sub,sup{line-height:0}
+.fr{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 5px;line-height:1.3}.fr>span:first-child{border-bottom:2px solid currentColor;padding:0 6px 2px}.fr>span:last-child{padding:2px 6px 0}
+.sl{display:inline-block;border:2px solid var(--pri);border-radius:8px;min-width:2.1em;padding:0 6px;text-align:center;margin:2px;background:var(--card)}.f b{margin:0 2px}.ex p{margin:8px 0 2px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:2px;background:var(--pri2);border-radius:99px;padding:4px}.seg button{font:inherit;font-weight:700;border:0;background:transparent;color:var(--pri);padding:8px 16px;border-radius:99px;cursor:pointer;transition:all .2s}.seg button.on{background:linear-gradient(135deg,#6c4cf1,#9a6cff);color:#fff;box-shadow:0 3px 10px rgba(108,76,241,.45)}.dl{font-size:13px;color:var(--mut);margin:4px 0 6px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[rnd(0,a.length-1)];
+const F=n=>n<=1?1:n*F(n-1),C=(n,k)=>{let r=1;for(let i=1;i<=k;i++)r=r*(n-k+i)/i;return Math.round(r)};
+const fmt=n=>n.toLocaleString('hu-HU');
+const bin=(n,k)=>`<span class="bn"><span><i>${n}</i><i>${k}</i></span></span>`;
+const fr=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+const sl=a=>a.map(x=>`<span class="sl">${x}</span>`).join('<b>·</b>');
+const dn=n=>Array.from({length:n},(_,i)=>n-i);
+const kexp=(n,k)=>`${bin(n,k)} = ${fr(sl(dn(n).slice(0,k)),sl(dn(k)))} = ${fmt(C(n,k))}`;
+const NAMES=['Anna','Bence','Csilla','Dani','Emese','Feri','Gréta','Hunor','Ildi','Jani'];
+
+const T={
+pn:{n:'Ismétlés nélküli permutáció',ic:'🔀',f:'P<sub>n</sub> = n!',
+ th:'<p><b>n különböző elem</b> összes sorrendje (mindet felhasználjuk, a sorrend számít).</p><p>Az első helyre n elem közül választhatunk, a másodikra n−1, … az utolsóra 1: n·(n−1)·…·1 = <b>n!</b> (n faktoriális). Megállapodás: 0! = 1.</p><p class="hint">Példa: 5 barát sorba állása: 5! = 120.</p>'},
+pr:{n:'Ismétléses permutáció',ic:'🔤',f:fr('n!','k<sub>1</sub>!·k<sub>2</sub>!·…·k<sub>r</sub>!'),
+ th:'<p><b>n elem</b> sorba rendezése, ha vannak egyformák: az egyik fajtából k<sub>1</sub>, a másikból k<sub>2</sub> stb. (k<sub>1</sub>+k<sub>2</sub>+…=n).</p><p>Az egyforma elemek felcserélése nem ad új sorrendet, ezért az n!-t osztjuk az egyformák sorrendjeinek számával.</p><p class="hint">Példa: az ANNA szó betűi: 4!/(2!·2!) = 6.</p>'},
+vn:{n:'Ismétlés nélküli variáció',ic:'🥇',f:'V<sub>n</sub><sup>k</sup> = n·(n−1)·…·(n−k+1) = '+fr('n!','(n−k)!'),
+ th:'<p>n különböző elemből <b>k darabot választunk úgy, hogy a sorrend számít</b>, és egy elemet legfeljebb egyszer használhatunk.</p><p>Az első helyre n, a másodikra n−1, … a k-adikra n−k+1 lehetőség van.</p><p class="hint">Példa: 10 versenyzőből a dobogó (1., 2., 3.): 10·9·8 = 720.</p>'},
+vr:{n:'Ismétléses variáció',ic:'🔁',f:'V<sub>n</sub><sup>k,i</sup> = n<sup>k</sup>',
+ th:'<p>n féle elemből <b>k helyet töltünk ki, a sorrend számít, és egy elem többször is szerepelhet</b>.</p><p>Minden egyes helyre n lehetőség van, függetlenül a többitől: n·n·…·n = <b>n<sup>k</sup></b>.</p><p class="hint">Példa: 3 jegyű szám az 1,2,3,4 számjegyekből: 4<sup>3</sup> = 64.</p>'},
+kn:{n:'Ismétlés nélküli kombináció',ic:'🎯',f:'C<sub>n</sub><sup>k</sup> = '+bin('n','k')+' = '+fr('n!','k!·(n−k)!'),
+ th:'<p>n különböző elemből <b>k darabot választunk úgy, hogy a sorrend NEM számít</b> (csak az számít, kik kerülnek be), ismétlés nélkül.</p><p>Ha a sorrend számítana, V<sub>n</sub><sup>k</sup> eset lenne, de minden k elemű csoportot k!-szor számoltunk: ezért osztunk k!-sal. Az '+bin('n','k')+' a <b>binomiális együttható</b> (n alatt a k).</p><p class="hint">Példa: lottó 5 a 90-ből: '+bin(90,5)+' = 43 949 268.</p>'}
+};
+const TR='<p><b>Tálcás felírás:</b> minden helyhez egy „tálcát” rajzolunk, beleírjuk, hányféle elem kerülhet oda, és a számokat összeszorozzuk.</p><div class="f">';
+T.pn.th+=TR+sl([5,4,3,2,1])+' = 120</div>';
+T.vn.th+=TR+sl([10,9,8])+' = 720</div>';
+T.vr.th+=TR+sl([4,4,4])+' = 64</div>';
+T.kn.th+='<p><b>Tálcás felírás:</b> a variációk számát osztjuk a k elem sorrendjeinek számával.</p><div class="f">'+kexp(5,3)+'</div>';
+const KEYS=Object.keys(T);
+
+const G={
+pn(adv){const n=rnd(adv?5:4,8);
+ if(!adv)return{t:'pn',q:pick([`${n} barát sorba áll a mozipénztárnál. Hányféle sorrendben állhatnak?`,`${n} különböző könyvet egymás mellé teszünk a polcon. Hányféleképpen tehetjük ezt meg?`,`Egy ${n} fős osztály ${n} különböző színű zászlót tűz ki egy sorban. Hányféle sorrend lehetséges?`,`${n} diák ül egy padsorban ${n} széken. Hányféle ülésrend lehetséges?`]),a:F(n),e:`<p>Minden helyre eggyel kevesebb elem közül választhatunk:</p><div class="f">${sl(dn(n))} = ${n}! = ${fmt(F(n))}</div>`,h:'Mind a különböző elemet sorba rakjuk, a sorrend számít.'};
+ const A=pick(NAMES),B=pick(NAMES.filter(x=>x!==A)),c=rnd(0,2);
+ if(c===0)return{t:'pn',q:`${n} fős csoport sorba áll fényképezkedni. ${A} mindig a sor elején áll. Hányféle sorrend lehetséges?`,a:F(n-1),e:`<p>Az első hely adott (1 lehetőség), a többi ${n-1} embert szabadon rendezhetjük:</p><div class="f">${sl([1,...dn(n-1)])} = ${fmt(F(n-1))}</div>`,h:'Kiemelt hely: azt rögzítsd, a többiek sorrendje szabad.'};
+ if(c===1)return{t:'pn',q:`${n} ember sorba áll, ${A} és ${B} egymás mellett állnak (bármelyik sorrendben). Hányféle sorrend lehetséges?`,a:2*F(n-1),e:`<p>${A} és ${B} egy „blokkot” alkot, belső sorrendjük 2-féle. A blokkot és a többi ${n-2} embert ${n-1} „elemként” rendezzük:</p><div class="f">${sl([2,...dn(n-1)])} = ${fmt(2*F(n-1))}</div>`,h:'Kezeld a két kiemelt embert egyetlen elemként, de a belső sorrendjüket se felejtsd el.'};
+ return{t:'pn',q:`${n} ember sorba áll, a sor két szélén ${A} és ${B} áll (bármelyik sorrendben). Hányféle sorrend lehetséges?`,a:2*F(n-2),e:`<p>A két szélső hely: 2-féle módon foglalhatják el, a köztes ${n-2} helyre a többiek kerülnek:</p><div class="f">${sl([2,...dn(n-2)])} = ${fmt(2*F(n-2))}</div>`,h:'Először a kiemelt helyeket töltsd ki, aztán a többieket.'}},
+pr(adv){const pw=()=>pick(['ANNA','BANÁN','LEVEL','KOKOSZ','KARAKTER','MISSISSIPPI','MATEMATIKA','ALMA','ANANÁSZ','KALAPÁCS','SZERENCSE','ABRAKADABRA']);
+ const ex=(n,ks)=>`<div class="f">${fr(n+'!',ks.map(k=>k+'!').join('·'))} = ${fmt(F(n)/ks.reduce((p,k)=>p*F(k),1))}</div>`;
+ if(adv){const w=pw(),m={};for(const c of w)m[c]=(m[c]||0)+1;const L=pick(Object.keys(m)),first=Math.random()<.5;m[L]--;const ks=Object.values(m).filter(x=>x>0),n=w.length-1,a=F(n)/ks.reduce((p,k)=>p*F(k),1);
+  return{t:'pr',q:`Hányféleképpen rendezhetjük sorba a(z) ${w} szó betűit úgy, hogy a ${first?'első':'utolsó'} betű ${L} legyen? (Nem kell, hogy értelmes szó legyen.)`,a,e:`<p>A ${first?'első':'utolsó'} hely adott (${L}), a maradék ${n} betűt rendezzük, az egyformák miatt osztunk:</p>${ex(n,ks)}`,h:'Rögzítsd a kiemelt helyet, a maradék betűk közt viszont még mindig vannak egyformák.'}}
+ if(Math.random()<.6){const w=pw(),m={};for(const c of w)m[c]=(m[c]||0)+1;const ks=Object.values(m),a=F(w.length)/ks.reduce((p,k)=>p*F(k),1);
+  return{t:'pr',q:`Hányféleképpen rendezhetjük sorba a(z) ${w} szó betűit? (Nem kell, hogy értelmes szó legyen.)`,a,e:`<p>${w.length} betű van, az egyformák felcserélése nem ad új sorrendet, ezért osztunk:</p>${ex(w.length,ks)}`,h:'Vannak egyforma betűk: az ismétlődőkkel osztani kell.'}}
+ const r=rnd(2,4),b=rnd(1,3),g=rnd(1,3),n=r+b+g,a=F(n)/(F(r)*F(b)*F(g));
+ return{t:'pr',q:`${r} piros, ${b} kék és ${g} zöld golyót sorba rakunk. Az azonos színűek nem különböztethetők meg. Hány különböző sorrend lehetséges?`,a,e:`<p>${n} golyó, az azonos színűek egyformák:</p>${ex(n,[r,b,g])}`,h:'Az azonos színűek egyformák: az egyformák számának faktoriálisával osztunk.'}},
+vn(adv){const A=pick(NAMES);
+ if(adv){if(Math.random()<.5){const n=rnd(7,15);return{t:'vn',q:`${n} versenyző indul egy futóversenyen, ${A} biztosan megnyeri. Hányféleképpen alakulhat a dobogó (1., 2., 3. hely)?`,a:(n-1)*(n-2),e:`<p>Az 1. hely adott (1 lehetőség), a 2. helyre ${n-1}, a 3. helyre ${n-2} versenyző jöhet szóba:</p><div class="f">${sl([1,n-1,n-2])} = ${(n-1)*(n-2)}</div>`,h:'Kiemelt hely: azt rögzítsd, a többi helyre a maradék elemek közül választ.'}}
+  const n=rnd(6,9),k=rnd(2,3),e=Math.floor(n/2),l=dn(n-1).slice(0,k-1),a=l.reduce((p,x)=>p*x,e);
+  return{t:'vn',q:`Hány páros ${k} jegyű szám készíthető az 1, 2, …, ${n} számjegyekből, ha egy számjegyet csak egyszer használhatunk fel?`,a,e:`<p>Először az utolsó számjegyet választjuk (${e} páros számjegy van), utána a többi helyre a maradékból:</p><div class="f">${sl([e,...l])} = ${a}</div>`,h:'Kiemelt hely: a kötöttséggel rendelkező (utolsó) helyet töltsd ki először.'}}
+ const c=rnd(0,1);if(c===0){const n=rnd(6,14);return{t:'vn',q:`${n} versenyző indul egy futóversenyen. Hányféleképpen alakulhat a dobogó (1., 2. és 3. hely)?`,a:n*(n-1)*(n-2),e:`<p>Az 1. helyre ${n}, a 2.-ra ${n-1}, a 3.-ra ${n-2} versenyző jöhet szóba:</p><div class="f">${sl([n,n-1,n-2])} = ${fmt(n*(n-1)*(n-2))}</div>`,h:'Különböző helyezések, senki nem lehet két helyen: a sorrend számít, ismétlés nincs.'}}
+ const n=rnd(5,9),k=rnd(2,4),l=dn(n).slice(0,k),a=l.reduce((p,x)=>p*x,1);
+ return{t:'vn',q:`Hány különböző ${k} jegyű szám készíthető az 1, 2, …, ${n} számjegyekből, ha egy számjegyet csak egyszer használhatunk fel?`,a,e:`<p>Minden helyiértékre eggyel kevesebb számjegy közül választhatunk:</p><div class="f">${sl(l)} = ${fmt(a)}</div>`,h:'Más sorrend más szám, de számjegy nem ismétlődhet.'}},
+vr(adv){const E=(l,a)=>`<div class="f">${sl(l)} = ${fmt(a)}</div>`;
+ if(adv){const c=rnd(0,2);if(c===0){const k=rnd(3,5);return{t:'vr',q:`Hány ${k} jegyű szám írható fel a 0, 1, …, 9 számjegyekkel, ha a számjegyek ismétlődhetnek?`,a:9*10**(k-1),e:`<p>Az első helyen nem állhat 0 (9 lehetőség), a többi helyen bármely számjegy (10):</p>${E([9,...Array(k-1).fill(10)],9*10**(k-1))}`,h:'Kiemelt hely: az első jegy nem lehet 0.'}}
+  if(c===1){const n=rnd(3,6),k=rnd(3,5);return{t:'vr',q:`Hány ${k} jegyű szám készíthető az 1, 2, …, ${n} számjegyekből, ha a számjegyek ismétlődhetnek, de a szám első jegye 1?`,a:n**(k-1),e:`<p>Az első hely adott (1 lehetőség), a többi ${k-1} helyre ${n}-féle számjegy kerülhet:</p>${E([1,...Array(k-1).fill(n)],n**(k-1))}`,h:'Kiemelt hely: rögzítsd, a többi hely szabad.'}}
+  const k=rnd(3,4),a=9*10**(k-2)*5;return{t:'vr',q:`Hány páratlan ${k} jegyű szám írható fel a 0, 1, …, 9 számjegyekkel, ha a számjegyek ismétlődhetnek?`,a,e:`<p>Az első helyen 9 (nem lehet 0), a középsőkön 10, az utolsón 5 (páratlan) lehetőség van:</p>${E([9,...Array(k-2).fill(10),5],a)}`,h:'Két kiemelt hely van: az első és az utolsó jegy.'}}
+ const c=rnd(0,2);if(c===0){const n=rnd(3,6),k=rnd(3,5);return{t:'vr',q:`Hány ${k} jegyű szám készíthető az 1, 2, …, ${n} számjegyekből, ha a számjegyek ismétlődhetnek?`,a:n**k,e:`<p>Mindegyik helyre ${n}-féle számjegy kerülhet:</p>${E(Array(k).fill(n),n**k)}<p>${n}<sup>${k}</sup> = ${fmt(n**k)}</p>`,h:'Minden helyiértékre ugyanannyi lehetőség van, számjegy ismétlődhet.'}}
+ if(c===1){const m=rnd(3,4),k=rnd(4,7);return{t:'vr',q:`Egy ${k} kérdéses tesztben mindegyik kérdésre ${m} válaszlehetőség van, és pontosan egy jelölhető meg. Hányféleképpen tölthető ki a teszt?`,a:m**k,e:`<p>Mindegyik kérdésre ${m}-féleképpen válaszolhatunk:</p>${E(Array(k).fill(m),m**k)}<p>${m}<sup>${k}</sup> = ${fmt(m**k)}</p>`,h:'Minden kérdésre egymástól függetlenül választunk.'}}
+ const k=rnd(3,5);return{t:'vr',q:`Egy dobókockával ${k}-szor egymás után dobunk. Hány különböző dobássorozat lehetséges?`,a:6**k,e:`<p>Mindegyik dobásnál 6 kimenetel van:</p>${E(Array(k).fill(6),6**k)}<p>6<sup>${k}</sup> = ${fmt(6**k)}</p>`,h:'Minden dobásnál 6 kimenetel van, ismétlődhetnek.'}},
+kn(adv){const A=pick(NAMES),B=pick(NAMES.filter(x=>x!==A));
+ if(adv){const n=rnd(8,16),k=rnd(3,5),c=rnd(0,2);
+  if(c===0)return{t:'kn',q:`${n} tanulóból ${k} fős csapatot választunk. ${A} biztosan tagja a csapatnak. Hányféleképpen választhatjuk ki a csapatot?`,a:C(n-1,k-1),e:`<p>${A} már bent van, a maradék ${n-1} tanulóból még ${k-1} főt választunk:</p><div class="f">${kexp(n-1,k-1)}</div>`,h:'Kiemelt elem: ő biztos, a többiek közül választunk (és a sorrend nem számít).'};
+  if(c===1)return{t:'kn',q:`${n} tanulóból ${k} fős csapatot választunk. ${A} nem lehet a csapat tagja. Hányféleképpen választhatjuk ki a csapatot?`,a:C(n-1,k),e:`<p>${A} kiesik, a maradék ${n-1} tanulóból választunk ${k} főt:</p><div class="f">${kexp(n-1,k)}</div>`,h:'Kiemelt elem: ő nem választható, tehát eggyel kevesebb elemből választunk.'};
+  return{t:'kn',q:`${n} tanulóból ${k} fős csapatot választunk. ${A} és ${B} mindketten tagjai a csapatnak. Hányféleképpen választhatjuk ki a csapatot?`,a:C(n-2,k-2),e:`<p>Ők ketten már bent vannak, a maradék ${n-2} tanulóból még ${k-2} főt választunk:</p><div class="f">${kexp(n-2,k-2)}</div>`,h:'Két kiemelt elem biztosan bent van, a többiek közül választunk.'}}
+ const c=rnd(0,2);if(c===0){const n=rnd(8,16),k=rnd(2,4);return{t:'kn',q:`${n} tanulóból ${k} fős csapatot választunk. Hányféleképpen tehetjük ezt meg?`,a:C(n,k),e:`<p>Ha számítana a sorrend, a variációk számát kapnánk; a ${k} kiválasztott sorrendje (${k}!) azonban nem számít, ezért osztunk:</p><div class="f">${kexp(n,k)}</div>`,h:'A csapatban nincs sorrend, csak az számít, kik kerülnek be.'}}
+ if(c===1){const n=rnd(6,20);return{t:'kn',q:`Egy buliban ${n} ember van, és mindenki kezet fog mindenkivel pontosan egyszer. Hány kézfogás történik?`,a:C(n,2),e:`<p>Egy kézfogás egy pár (A–B ugyanaz, mint B–A):</p><div class="f">${kexp(n,2)}</div>`,h:'Egy kézfogás = egy pár; A–B ugyanaz, mint B–A.'}}
+ const n=pick([20,30,35,45,90]),k=rnd(2,5);return{t:'kn',q:`Egy játékban ${n} számból ${k}-et húznak ki (a húzás sorrendje nem számít). Hányféle húzási eredmény lehetséges?`,a:C(n,k),e:`<p>A kihúzott számok halmaza számít:</p><div class="f">${kexp(n,k)}</div>`,h:'A kihúzott számok halmaza számít, a sorrendjük nem.'}}
+};
+
+const TITLES=['Kezdő számolgató','Sorbaállító','Variálgató','Kombinátor','Permutáló','Faktoriális-mester','Binomiális bajnok','Kombinatorika-legenda'];
+const BADGES=[
+['first','🌱','Első lépés','Az első helyes válasz',s=>tot(s)>=1],
+['s5','🔥','Tűzben','5-ös sorozat egy körben',s=>s.best>=5],
+['perf','💎','Hibátlan kör','10/10 helyes válasz',s=>s.perf>=1],
+['cls','🧠','Típusvadász','10 helyes típusfelismerés',s=>s.cls>=10],
+...KEYS.map(k=>['m'+k,T[k].ic,'Mester: '+T[k].n.split(' ')[T[k].n.split(' ').length-1],'10 helyes válasz alap és összetett szinten is',s=>s.d[k].a>=10&&s.d[k].c>=10]),
+['all','🏆','Mindent tudó','Mind az 5 téma mestere',s=>KEYS.every(k=>s.d[k].a>=10&&s.d[k].c>=10)],
+['l5','⭐','5. szint','Érj el 500 XP-t',s=>s.xp>=500]
+];
+const tot=s=>KEYS.reduce((p,k)=>p+s.c[k],0);
+const mk=()=>Object.fromEntries(KEYS.map(k=>[k,{a:0,c:0}]));
+let S={xp:0,best:0,perf:0,cls:0,rounds:0,c:{pn:0,pr:0,vn:0,vr:0,kn:0},b:{}};
+try{const x=JSON.parse(localStorage.getItem('kombi'));if(x&&x.c)S=Object.assign(S,x)}catch(e){}
+if(!S.d||!S.d.pn){S.d=mk();KEYS.forEach(k=>S.d[k].a=S.c[k]||0)}
+const save=()=>{try{localStorage.setItem('kombi',JSON.stringify(S))}catch(e){}};
+const lvl=()=>Math.floor(S.xp/100)+1;
+let Q=null,view='home',topic=null,D='a';
+let RS=0;
+const diff=()=>`<div class="dl">Nehézségi szint</div><div class="seg">${[['a','🌱','Alap'],['c','🚀','Összetett'],['m','🎲','Vegyes']].map(([k,i,l])=>`<button class="${D===k?'on':''}" onclick="D='${k}';render()">${i} ${l}</button>`).join('')}</div>`;
+const prog=k=>{const d=S.d[k],B=v=>`<div class="bar" style="margin-top:8px"><i style="width:${v}%"></i></div>`;
+ if(D==='m')return B(Math.min(100,(Math.min(d.a,10)+Math.min(d.c,10))*5))+`<div class="hint">Alap: ${d.a} · Összetett: ${d.c} megoldott ${d.a>=10&&d.c>=10?'· ⭐':''}</div>`;
+ const v=d[D];return B(Math.min(100,v*10))+`<div class="hint">${D==='a'?'Alap':'Összetett'}: ${v} megoldott feladat ${v>=10?'· ⭐':''}</div>`};
+function resetAll(){S={xp:0,best:0,perf:0,cls:0,rounds:0,c:{pn:0,pr:0,vn:0,vr:0,kn:0},b:{},d:mk()};RS=0;save();render()}
+
+function toast(m){const t=document.createElement('div');t.className='toast';t.innerHTML=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function award(xp){const l0=lvl();S.xp+=xp;const msgs=[];
+ if(lvl()>l0)msgs.push(`🎉 Szintet léptél: <b>${lvl()}. szint – ${TITLES[Math.min(lvl()-1,7)]}</b>`);
+ for(const [id,e,n,d,f] of BADGES)if(!S.b[id]&&f(S)){S.b[id]=1;msgs.push(`${e} Új jelvény: <b>${n}</b>`)}
+ save();if(msgs.length)toast(msgs.join('<br>'))}
+
+function topbar(){const l=lvl(),p=S.xp%100;return `<div class="top"><span class="lvl">${l}. szint</span><div class="xpw"><div class="xpt"><span>${TITLES[Math.min(l-1,7)]}</span><span>${S.xp} XP</span></div><div class="bar"><i style="width:${p}%"></i></div></div></div>`}
+function go(v,t){view=v;topic=t||null;render();window.scrollTo(0,0)}
+
+function render(){const a=$('#app');
+ if(view==='home')a.innerHTML=topbar()+home();
+ else if(view==='topic')a.innerHTML=topbar()+topicView();
+ else if(view==='badges')a.innerHTML=topbar()+badges();
+ else if(view==='quiz')a.innerHTML=topbar()+quiz();
+ else if(view==='end')a.innerHTML=topbar()+endView();
+}
+function home(){return `<h1>🧮 Kombi-Kaland</h1><p class="sub">Gyakorold a kombinatorikát, gyűjts XP-t, szerezz jelvényeket!</p>
+<h2>Témák</h2>${diff()}<div class="grid" style="margin-top:10px">${KEYS.map(k=>`<div class="card tc" onclick="go('topic','${k}')"><div class="ic">${T[k].ic}</div><b>${T[k].n}</b>${prog(k)}</div>`).join('')}</div>
+<h2>Kihívások</h2><div class="grid">
+<div class="card tc" onclick="start('mix')"><div class="ic">🎲</div><b>Vegyes kör</b><p class="hint">10 feladat minden témából. Neked kell felismerni a típust!</p></div>
+<div class="card tc" onclick="start('cls')"><div class="ic">🕵️</div><b>Típusfelismerő</b><p class="hint">Nem számolsz, csak eldöntöd, melyik képlet kell. Gyors XP!</p></div>
+<div class="card tc" onclick="go('badges')"><div class="ic">🏅</div><b>Jelvényeim</b><p class="hint">${Object.keys(S.b).length}/${BADGES.length} megszerezve</p></div></div>
+<details class="card" style="margin-top:14px"><summary>🧭 Hogyan döntsem el, melyik típus?</summary>
+<ol><li><b>Mindet sorba rakjuk?</b> → permutáció. Vannak egyforma elemek? Igen: <i>ismétléses</i>, nem: <i>ismétlés nélküli</i>.</li><li><b>Kiválasztunk néhányat, és a sorrend számít?</b> → variáció. Egy elem többször is szerepelhet? Igen: <i>ismétléses</i>, nem: <i>ismétlés nélküli</i>.</li><li><b>Kiválasztunk néhányat, és a sorrend nem számít?</b> → ismétlés nélküli kombináció.</li></ol></details>
+<p class="hint" style="margin-top:14px">Kerettanterv: NAT 2020 (10. évf., kombinatorika) · Érettségi: 2024-től érvényes középszintű követelmények (sorba rendezések és kiválasztások száma, faktoriális, binomiális együttható).</p>
+<p class="hint">${RS?`Biztosan törlöd az összes haladásodat? <button class="btn sm" style="background:var(--bad)" onclick="resetAll()">Igen, törlés</button> <button class="btn sec sm" onclick="RS=0;render()">Mégsem</button>`:`<button class="btn sec sm" onclick="RS=1;render()">Haladás törlése</button>`}</p>`}
+function topicView(){const t=T[topic];return `<p style="margin-top:14px"><button class="btn sec sm" onclick="go('home')">← Vissza</button></p><h1>${t.ic} ${t.n}</h1><div class="card"><div class="f">${t.f}</div>${t.th}</div><div style="margin-top:14px">${diff()}</div><div class="row" style="margin-top:10px"><button class="btn" onclick="start('topic','${topic}')">Gyakorlás indítása (10 feladat)</button></div>`}
+function badges(){return `<p style="margin-top:14px"><button class="btn sec sm" onclick="go('home')">← Vissza</button></p><h1>🏅 Jelvényeim</h1><p class="sub">Legjobb sorozat: ${S.best} 🔥 · Játszott körök: ${S.rounds}</p><div class="bd">${BADGES.map(([id,e,n,d])=>`<div class="b ${S.b[id]?'':'off'}"><div class="e">${e}</div><b>${n}</b><small>${d}</small></div>`).join('')}</div>`}
+
+function start(mode,type){Q={mode,type,seen:[],i:0,hearts:3,ok:0,streak:0,xp0:S.xp,cur:null,done:false,hint:false};S.rounds++;next()}
+function next(){if(Q.i>=10||Q.hearts<=0){S.rounds=S.rounds;if(Q.ok===10&&Q.hearts>0){S.perf++;}award(Q.ok===10?20:0);view='end';return render()}
+ let c,t=0;const adv=D==='c'||(D==='m'&&Math.random()<.5);do{c=G[Q.mode==='topic'?Q.type:pick(KEYS)](adv)}while(Q.seen.includes(c.q)&&++t<40);c.adv=adv;Q.seen.push(c.q);Q.cur=c;Q.warn=0;Q.done=false;Q.hint=false;Q.res=null;view='quiz';render();const i=$('#ans');if(i)i.focus()}
+function quiz(){const c=Q.cur,h='❤️'.repeat(Q.hearts)+'🖤'.repeat(3-Q.hearts);
+ const head=`<div class="row" style="justify-content:space-between;margin:14px 0 8px"><button class="btn sec sm" onclick="go('home')">✕ Kilépés</button><span>${h}</span><span>🔥 ${Q.streak}</span><span class="hint">${Q.i+1}/10</span></div><div class="bar"><i style="width:${Q.i/10*100}%"></i></div>`;
+ let body=`<div class="card" style="margin-top:12px"><p class="q">${c.q}</p>`;
+ if(Q.mode==='cls'){body+=`<p class="hint">Melyik típusba tartozik a feladat?</p><div class="opts">${KEYS.map(k=>`<button class="btn ${Q.done?(k===c.t?'good':(k===Q.res?'wrong':'')):''}" ${Q.done?'disabled':''} onclick="pickType('${k}')">${T[k].ic} ${T[k].n}</button>`).join('')}</div>`}
+ else{body+=`<p class="hint">✍️ <b>A kiszámított végeredményt</b> írd be számként (pl. 120)! Nem elég a műveletet vagy kifejezést (pl. 5!) felírni.</p><input type="text" id="ans" inputmode="numeric" autocomplete="off" placeholder="A kiszámított végeredmény…" ${Q.done?'disabled':''} onkeydown="if(event.key==='Enter')Q.done?next():check()"><div class="row" style="margin-top:10px">${Q.done?`<button class="btn" onclick="next()">Tovább →</button>`:`<button class="btn" onclick="check()">Ellenőrzés</button><button class="btn sec" onclick="hint()">💡 Tipp (−5 XP)</button>`}</div>`}
+ if(Q.hint&&!Q.done)body+=`<div class="fb" style="background:var(--pri2)">💡 ${c.h}</div>`;
+ body+='</div>';if(Q.warn&&!Q.done)body+='<div class="fb no">Ez még nem a végeredmény! Számold ki az értéket, és számként írd be (pl. 120, nem 5!).</div>';
+ if(Q.done){const ok=Q.right;body+=`<div class="fb ${ok?'ok':'no'}"><b>${ok?'✅ Helyes!':'❌ Nem egészen.'}</b> ${Q.msg||''}<p>Típus: <b>${T[c.t].n}</b></p><div class="ex"><b>📝 Magyarázat</b>${c.e}</div>${Q.mode==='cls'?`<button class="btn" onclick="next()">Tovább →</button>`:''}</div>`}
+ return head+body}
+function hint(){Q.hint=true;if(!Q.hinted){Q.hinted=1}render();const i=$('#ans');if(i)i.focus()}
+function result(ok){Q.done=true;Q.right=ok;if(ok){Q.ok++;Q.streak++;if(Q.streak>S.best)S.best=Q.streak}else{Q.streak=0;Q.hearts--}Q.i++}
+function check(){const v=$('#ans').value.replace(/[\s\u00a0]/g,'');if(!v)return;if(!/^\d+$/.test(v)){Q.warn=1;render();return}Q.warn=0;const ok=Number(v)===Q.cur.a;
+ if(ok){const g=Math.max(5,(Q.hint?5:10)+Math.min(Q.streak,5)*2);S.c[Q.cur.t]++;S.d[Q.cur.t][Q.cur.adv?'c':'a']++;result(true);Q.msg=`+${g} XP`;Q.hint=false;award(g)}
+ else{result(false);Q.msg=`A helyes eredmény: <b>${fmt(Q.cur.a)}</b>.`;Q.hint=false;save()}
+ render()}
+function pickType(k){Q.res=k;const ok=k===Q.cur.t;if(ok){S.cls++;result(true);Q.msg='+8 XP';award(8)}else{result(false);Q.msg='';save()}render()}
+function endView(){const bonus=Q.ok===10?' (+20 XP hibátlan bónusz!)':'';return `<div class="card" style="margin-top:16px;text-align:center"><div class="big">${Q.hearts<=0?'💔':Q.ok>=6?'🏆':'👍'}</div><h1>${Q.hearts<=0?'Elfogytak a szívek':'Kör vége!'}</h1><p>Helyes válaszok: <b>${Q.ok}</b> · Szerzett XP: <b>${S.xp-Q.xp0}</b>${bonus}</p><p class="hint">${Q.ok>=6?'Szép munka! Próbáld ki a vegyes kört is.':'Nézd át újra az elméletet, és próbáld újra!'}</p><div class="row" style="justify-content:center"><button class="btn" onclick="start(Q.mode,Q.type)">Új kör</button><button class="btn sec" onclick="go('home')">Főmenü</button></div></div>`}
+render();
+</script>
+</body>
+</html>
