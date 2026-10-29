@@ -22,6 +22,9 @@ header p{margin:0;color:var(--muted)}
 .tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .count{font-size:12px;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 8px}
 .tab[aria-selected="true"] .count{background:rgba(255,255,255,.25);color:#fff}
+.sec{margin-bottom:32px}
+.sec h2{font-size:20px;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+.sec h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .card{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;text-decoration:none;color:inherit;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
 a.card:hover{transform:translateY(-3px);border-color:var(--accent)}
@@ -29,8 +32,7 @@ a.card:hover{transform:translateY(-3px);border-color:var(--accent)}
 .card h3{margin:0;font-size:19px}
 .card p{margin:0;color:var(--muted);font-size:14px;flex:1}
 .go{color:var(--accent);font-weight:600;font-size:14px}
-.empty{grid-column:1/-1;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:16px;padding:40px 20px}
-footer{margin-top:36px;text-align:center;color:var(--muted);font-size:13px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:16px;padding:24px 20px}
 </style>
 </head>
 <body>
@@ -41,8 +43,7 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:13px}
   <p>Válassz évfolyamot, és gyakorolj!</p>
 </header>
 <div class="tabs" role="tablist" id="tabs"></div>
-<main class="grid" id="grid"></main>
-<footer>Új app hozzáadása: a fájl elején lévő <code>APPS</code> listába kerül egy új sor.</footer>
+<main id="main"></main>
 </div>
 <script>
 /* ÚJ APP HOZZÁADÁSA: másolj be egy új sort ide.
@@ -54,30 +55,34 @@ const APPS = [
   {grade:10, title:"Hatványvadász", desc:"A hatványozás azonosságainak gyakorlása játékos formában.", folder:"hatvanyvadasz", icon:"🎯"}
 ];
 const GRADES=[9,10,11,12];
-let current=10;
-const tabs=document.getElementById('tabs'),grid=document.getElementById('grid');
+let current='all';
+const tabs=document.getElementById('tabs'),main=document.getElementById('main');
+function chip(label,val,n){
+  const b=document.createElement('button');
+  b.className='tab';b.setAttribute('role','tab');
+  b.setAttribute('aria-selected',val===current);
+  b.innerHTML=label+(n===null?'':' <span class="count">'+n+'</span>');
+  b.onclick=()=>{current=val;render()};
+  tabs.appendChild(b);
+}
 function render(){
   tabs.innerHTML='';
-  GRADES.forEach(g=>{
-    const n=APPS.filter(a=>a.grade===g).length;
-    const b=document.createElement('button');
-    b.className='tab';b.setAttribute('role','tab');
-    b.setAttribute('aria-selected',g===current);
-    b.innerHTML=g+'. évfolyam <span class="count">'+n+'</span>';
-    b.onclick=()=>{current=g;render()};
-    tabs.appendChild(b);
-  });
-  const list=APPS.filter(a=>a.grade===current);
-  grid.innerHTML='';
-  if(!list.length){
-    grid.innerHTML='<div class="empty">Ehhez az évfolyamhoz még nincs app. Hamarosan érkezik! 🚧</div>';
-    return;
-  }
-  list.forEach(a=>{
-    const el=document.createElement('a');
-    el.className='card';el.href=a.folder+'/app.html';
-    el.innerHTML='<div class="icon">'+a.icon+'</div><h3>'+a.title+'</h3><p>'+a.desc+'</p><span class="go">Megnyitás →</span>';
-    grid.appendChild(el);
+  chip('Mind','all',null);
+  GRADES.forEach(g=>chip(g+'. évfolyam',g,APPS.filter(a=>a.grade===g).length));
+  main.innerHTML='';
+  GRADES.filter(g=>current==='all'||g===current).forEach(g=>{
+    const sec=document.createElement('section');sec.className='sec';
+    sec.innerHTML='<h2>'+g+'. évfolyam</h2>';
+    const grid=document.createElement('div');grid.className='grid';
+    const list=APPS.filter(a=>a.grade===g);
+    if(!list.length) grid.innerHTML='<div class="empty">Ehhez az évfolyamhoz még nincs app. Hamarosan érkezik! 🚧</div>';
+    list.forEach(a=>{
+      const el=document.createElement('a');
+      el.className='card';el.href=a.folder+'/app.html';
+      el.innerHTML='<div class="icon">'+a.icon+'</div><h3>'+a.title+'</h3><p>'+a.desc+'</p><span class="go">Megnyitás →</span>';
+      grid.appendChild(el);
+    });
+    sec.appendChild(grid);main.appendChild(sec);
   });
 }
 render();
