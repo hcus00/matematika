@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hatványmester – 9. évfolyam</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fbfcff;--grid:#dbe6f6;--ink:#14213d;--soft:#5b6b8c;--hl:#ffd166;--ok:#06a77d;--bad:#ef476f;--gold:#d99100}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+.m{font-family:"Cambria Math","STIX Two Math","Latin Modern Math",Cambria,Georgia,serif}
+sup{font-size:.62em;line-height:0}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;font-size:.9em}
+.fr>span:first-child{border-bottom:2px solid currentColor;padding:0 .25em .05em}
+.fr>span:last-child{padding:.05em .25em 0}
+.top{display:flex;gap:16px;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px}
+h1{margin:0;font-size:34px;font-weight:900;letter-spacing:-.5px}
+.top p{margin:0;color:var(--soft)}
+.me{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:10px 14px;min-width:280px;box-shadow:4px 4px 0 var(--ink)}
+.me b{font-size:18px}
+.bar{height:12px;border:2px solid var(--ink);border-radius:8px;background:var(--paper);margin:4px 0;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--hl);transition:width .4s}
+.me small{color:var(--soft)}
+nav{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--vio,#6a4c93);outline-offset:2px}
+.tab{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:6px 18px;font-weight:700}
+.tab.on{background:var(--ink);color:#fff}
+.btn{border:2px solid var(--ink);background:var(--ink);color:#fff;border-radius:12px;padding:10px 22px;font-weight:900;font-size:17px;box-shadow:3px 3px 0 var(--hl)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:none}
+.lead{color:var(--soft);max-width:70ch}
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.tc,.card{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:14px;box-shadow:4px 4px 0 var(--ink)}
+.tc h3,.card h3{margin:0 0 6px;font-size:19px}
+.fm{display:inline-block;background:var(--hl);padding:2px 10px;border-radius:6px;font-size:20px}
+.row{display:flex;gap:8px;align-items:center;margin-top:10px}
+.row>b{width:84px;font-size:14px;flex:none}
+.lv{flex:1;border:2px solid var(--ink);background:var(--paper);border-radius:10px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;font-size:13px;font-weight:700}
+.lv:hover{background:var(--hl)}
+.lv em{font-style:normal;color:var(--gold);letter-spacing:1px}
+.th{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px}
+.th .fm{font-size:26px;margin:4px 0 8px}
+.th p{margin:6px 0}
+.ex1{background:var(--paper);border-radius:8px;padding:4px 10px;margin:6px 0;font-size:20px}
+.warn{border-left:5px solid var(--bad);padding:2px 10px;background:#fff5f7;margin-top:8px}
+.note{background:#fff;border:2px dashed var(--ink);border-radius:14px;padding:12px 16px;margin-top:16px}
+.bd{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.bg{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:12px;text-align:center}
+.bg.off{opacity:.45;border-style:dashed}
+.bg .ic{font-size:34px}
+.rt{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.dots{display:flex;gap:6px}
+.dots span{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);background:#fff}
+.dots .ok{background:var(--ok)}.dots .no{background:var(--bad)}.dots .cur{background:var(--hl)}
+.chip{background:var(--hl);border:2px solid var(--ink);border-radius:999px;padding:2px 12px;font-weight:900}
+.q{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:18px;box-shadow:4px 4px 0 var(--ink)}
+.expr{font-size:clamp(26px,5vw,40px);margin:14px 0;overflow-x:auto;padding:6px 0;line-height:2.1}
+.num{font:700 28px "Cambria Math",Georgia,serif;width:7em;max-width:60%;border:2px solid var(--ink);border-radius:8px;padding:2px 8px;margin-left:8px}
+.sx{position:relative;top:-.8em;margin:0 .1em}
+.ex{font:700 18px "Cambria Math",Georgia,serif;width:3.2em;border:2px solid var(--ink);border-radius:6px;text-align:center;padding:2px}
+.dot{margin:0 .2em}
+.act{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.fb{margin-top:14px;padding:10px 14px;border-radius:10px;border:2px solid var(--ink);animation:pop .25s}
+.fb.ok{background:#e3f8f1;border-color:var(--ok)}
+.fb.bad{background:#fff0f3;border-color:var(--bad)}
+.fb ul{margin:6px 0 0;padding-left:20px}
+.fb ol,.stp{margin:6px 0 0;padding-left:22px}
+.fb li,.stp li{margin:5px 0}
+.fb small{color:var(--soft)}
+.q .warn{margin:6px 0}
+.hint{margin-top:10px;background:var(--paper);border:2px dashed var(--soft);border-radius:10px;padding:6px 14px}
+.hint ul{margin:0;padding-left:20px}
+.res{text-align:center;background:#fff;border:2px solid var(--ink);border-radius:14px;padding:24px;box-shadow:4px 4px 0 var(--ink)}
+.big{font-size:64px;color:var(--gold);letter-spacing:6px}
+@keyframes pop{from{transform:scale(.96);opacity:.5}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.fb{animation:none}.bar span{transition:none}}
+@media (max-width:480px){.th{grid-template-columns:1fr}.map{grid-template-columns:1fr}.me{min-width:0;width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ---------- feladatgenerátor ---------- */
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[R(0,a.length-1)],e=R;
+const S=s=>/\d/.test(s)?s:`<i>${s}</i>`;
+const FR=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+const ex=x=>String(x).replace('-','−');
+const sc=(m,k)=>{const o={};for(const s in m)o[s]=m[s]*k;return o};
+const ad=(a,b,g)=>{const o={...a};for(const s in b)o[s]=(o[s]||0)+g*b[s];return o};
+const sh=(a,b)=>Object.keys(a.m).some(s=>s in b.m);
+const mh=m=>Object.keys(m).sort((a,b)=>isNaN(a)||isNaN(b)?a.localeCompare(b):a-b).map(k=>S(k)+(m[k]==1?'':`<sup>${m[k]}</sup>`)).join('·').replace(/-/g,'−');
+const stp=(f,to,r)=>({f,to,r});
+const A=(s,x)=>{const h=S(s)+(x==1?'':`<sup>${ex(x)}</sup>`);return{t:'a',x,h,c:h,m:{[s]:x},r:[],s:[]}};
+const P=(n,k)=>{
+ const m=sc(n.m,k),at=n.t=='a'&&n.x==1,r=n.t=='m'?'prod':n.t=='f'?'frac':(n.t=='p'||(n.t=='a'&&n.x!=1))?'pp':null;
+ const h=(at?n.h:`(${n.h})`)+`<sup>${ex(k)}</sup>`,c=mh(m),s=[...n.s];
+ if(r=='frac'){const t=FR(mh(sc(n.a.m,k)),mh(sc(n.b.m,k)));s.push(stp(`(${n.c})<sup>${ex(k)}</sup>`,t,'frac'),stp(t,c,sh(n.a,n.b)?'div':'neg'))}
+ else if(r)s.push(stp(`(${n.c})<sup>${ex(k)}</sup>`,c,r));
+ return{t:'p',h,c,m,r:[...n.r,...(r?[r]:[])],s};
+};
+const M=(a,b)=>{
+ const m=ad(a.m,b.m,1),ff=a.t=='f'&&b.t=='f',d=ff||sh(a,b),k=ff?'fmul':'mul',s=[...a.s,...b.s],h=a.h+'·'+b.h,c=d?mh(m):`${a.c}·${b.c}`;
+ if(d)s.push(stp(`${a.c}·${b.c}`,c,k));
+ return{t:'m',h,c,m,r:[...a.r,...b.r,...(d?[k]:[])],s};
+};
+const D=(a,b)=>{
+ const m=ad(a.m,b.m,-1),d=sh(a,b),s=[...a.s,...b.s],h=FR(a.h,b.h),c=d?mh(m):FR(a.c,b.c);
+ if(d)s.push(stp(FR(a.c,b.c),c,'div'));
+ return{t:'d',h,c,m,r:[...a.r,...b.r,...(d?['div']:[])],s};
+};
+const DF=(a,b)=>{
+ const m=ad(a.m,b.m,-1),c=mh(m),s=[...a.s,...b.s],rc=`${a.c}·${FR(b.b.c,b.a.c)}`;
+ s.push(stp(`${a.c} : ${b.c}`,rc,'recip'),stp(rc,c,'fmul'));
+ return{t:'d',h:`${a.h} : ${b.h}`,c,m,r:[...a.r,...b.r,'recip','fmul'],s};
+};
+const F=(a,b)=>({t:'f',h:FR(a.h,b.h),c:FR(a.c,b.c),m:ad(a.m,b.m,-1),r:[...a.r,...b.r],s:[...a.s,...b.s],a,b});
+const TPL={
+pp:[[x=>P(A(x,e(2,5)),e(2,4))],
+ [x=>M(P(A(x,e(2,4)),e(2,3)),A(x,e(2,6))),x=>D(P(A(x,e(2,4)),e(2,4)),A(x,e(2,5))),(x,y)=>M(P(A(x,e(2,4)),e(2,3)),P(A(y,e(2,4)),e(2,3)))],
+ [x=>P(P(A(x,e(2,3)),e(2,3)),e(2,3)),x=>D(P(A(x,e(2,5)),e(2,4)),P(A(x,e(2,4)),e(2,3))),(x,y)=>M(P(A(x,e(2,4)),e(2,3)),D(P(A(y,e(2,5)),e(2,3)),A(y,e(2,6)))),x=>D(M(P(A(x,3),2),A(x,e(2,4))),P(A(x,e(2,4)),2))]],
+mul:[[x=>M(A(x,e(2,6)),A(x,e(2,6)))],
+ [x=>M(M(A(x,e(1,4)),A(x,e(1,4))),A(x,e(1,4))),(x,y)=>M(M(A(x,e(2,4)),A(y,e(2,4))),M(A(x,e(1,3)),A(y,e(1,3)))),(x,y)=>M(M(A(x,e(2,4)),A(y,e(1,3))),A(x,e(2,4)))],
+ [x=>D(M(A(x,e(2,5)),A(x,e(2,5))),A(x,e(2,6))),(x,y)=>M(P(A(x,e(2,3)),2),M(A(x,e(2,4)),A(y,e(1,3)))),x=>M(M(A(x,e(2,4)),P(A(x,e(1,3)),2)),D(A(x,e(5,7)),A(x,e(2,3))))]],
+div:[[x=>{const m=e(1,4);return D(A(x,m+e(1,4)),A(x,m))}],
+ [x=>D(M(A(x,e(2,4)),A(x,e(2,4))),A(x,e(2,4))),(x,y)=>M(D(A(x,e(3,7)),A(x,e(1,3))),D(A(y,e(3,7)),A(y,e(1,3)))),x=>D(A(x,e(5,9)),M(A(x,e(1,3)),A(x,e(1,3))))],
+ [x=>D(A(x,e(2,4)),A(x,e(5,8))),(x,y)=>D(M(A(x,e(3,6)),A(y,e(2,4))),M(A(x,e(2,5)),A(y,e(3,6)))),x=>D(P(A(x,e(2,3)),e(2,3)),M(A(x,e(2,3)),A(x,e(3,4))))]],
+prod:[[(x,y)=>P(M(A(x,1),A(y,1)),e(2,4))],
+ [(x,y)=>P(M(A(x,e(2,3)),A(y,e(2,3))),e(2,3)),(x,y)=>P(M(A(x,1),A(y,e(2,3))),e(2,4)),(x,y)=>M(P(M(A(x,1),A(y,1)),e(2,3)),A(x,e(1,3)))],
+ [(x,y)=>D(P(M(A(x,e(2,3)),A(y,e(2,3))),e(2,3)),M(A(x,e(1,3)),A(y,e(1,2)))),(x,y)=>M(P(M(A(x,2),A(y,1)),3),P(M(A(x,1),A(y,3)),2)),(x,y)=>P(M(P(A(x,e(2,3)),2),A(y,e(1,3))),e(2,3))]],
+frac:[[(x,y)=>P(F(A(x,1),A(y,1)),e(2,4))],
+ [(x,y)=>P(F(A(x,e(2,3)),A(y,e(1,3))),e(2,3)),(x,y)=>P(F(A(x,1),A(y,e(2,3))),e(2,4)),(x,y)=>M(P(F(A(x,1),A(y,1)),e(2,3)),A(y,e(1,4)))],
+ [(x,y)=>D(P(F(A(x,e(2,3)),A(y,e(2,3))),e(2,3)),A(x,e(2,4))),(x,y)=>M(P(F(A(x,2),A(y,1)),e(2,3)),P(F(A(y,3),A(x,1)),2)),(x,y)=>P(F(M(A(x,e(1,2)),A(y,e(1,2))),P(A(y,e(1,2)),2)),e(2,3))]]
+};
+const nE=(a,b)=>-e(a,b);
+const fm1=(x,y)=>M(F(M(A(x,e(2,4)),A(x,e(1,3))),P(A(y,e(1,3)),2)),F(P(A(y,e(2,3)),2),A(x,e(1,3))));
+const fm2=(x,y)=>M(F(P(M(A(x,e(1,2)),A(y,e(1,2))),2),A(y,e(2,4))),F(A(x,e(2,3)),M(A(x,e(1,2)),P(A(y,e(1,2)),2))));
+const fm3=(x,y)=>M(F(M(A(x,nE(1,3)),A(y,e(2,3))),P(A(x,e(1,2)),2)),F(P(A(y,nE(1,2)),2),A(x,e(1,3))));
+const fd1=(x,y)=>DF(F(M(A(x,e(2,4)),A(x,e(1,3))),A(y,e(2,3))),F(P(A(x,e(1,3)),2),M(A(y,e(1,2)),A(y,e(1,3)))));
+const fd2=(x,y)=>DF(F(P(A(x,e(2,3)),e(2,3)),M(A(y,e(2,3)),A(y,e(1,2)))),F(A(x,e(2,4)),P(A(y,e(2,3)),2)));
+const fd3=(x,y)=>DF(F(M(A(x,e(2,4)),P(A(y,e(1,2)),2)),A(x,e(1,3))),F(P(M(A(x,1),A(y,1)),2),A(y,e(2,3))));
+TPL.pp[1].push(x=>P(A(x,nE(1,4)),e(2,3)),x=>M(P(A(x,e(2,4)),e(2,3)),A(x,nE(2,6))),(x,y)=>M(P(A(x,e(2,4)),0),A(y,e(2,4))));
+TPL.mul[1].push(x=>M(A(x,nE(1,4)),A(x,e(2,6))),x=>M(A(x,nE(2,4)),A(x,nE(1,3))),(x,y)=>M(M(A(x,e(2,4)),A(y,nE(1,3))),A(x,nE(1,3))));
+TPL.div[1].push(x=>D(A(x,nE(1,3)),A(x,e(2,4))),x=>D(A(x,e(2,4)),A(x,nE(1,3))),x=>{const n=e(2,5);return D(A(x,n),A(x,n))});
+TPL.prod[1].push((x,y)=>P(M(A(x,nE(1,3)),A(y,e(1,3))),e(2,3)),(x,y)=>P(M(A(x,e(1,3)),A(y,e(1,3))),nE(1,2)));
+TPL.frac[1].push((x,y)=>P(F(A(x,e(1,3)),A(y,e(1,3))),nE(1,3)),(x,y)=>P(F(A(x,nE(1,3)),A(y,e(1,3))),e(2,3)));
+TPL.pp[2].push((x,y)=>M(P(A(x,nE(1,3)),e(2,3)),D(A(y,e(2,4)),P(A(y,nE(1,2)),2))),x=>D(P(A(x,e(2,3)),nE(1,2)),P(A(x,nE(1,3)),e(2,3))));
+TPL.mul[2].push((x,y)=>M(M(A(x,nE(2,4)),P(A(y,e(1,3)),-2)),M(A(x,e(3,6)),A(y,e(2,4)))),x=>M(M(A(x,nE(1,3)),A(x,0)),D(A(x,e(2,4)),A(x,nE(1,3)))),fm1);
+TPL.div[2].push((x,y)=>D(M(A(x,nE(1,3)),A(y,e(2,4))),M(A(x,nE(2,4)),A(y,nE(1,3)))),x=>D(P(A(x,nE(1,3)),e(2,3)),M(A(x,0),A(x,nE(1,3)))),fd1);
+TPL.prod[2].push((x,y)=>D(P(M(A(x,nE(1,3)),A(y,e(2,3))),nE(1,2)),M(A(x,e(1,3)),A(y,nE(1,2)))));
+TPL.frac[2].push((x,y)=>M(P(F(A(x,nE(1,3)),A(y,e(1,2))),nE(1,2)),A(x,e(2,4))),fm1,fm2,fm3,fd1,fd2,fd3);
+const LT=['a','b','c','x','y','z','m','n','p','q'],NB=[2,2,3,3,5,10];
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function two(p){const x=pick(p);let y=pick(p);while(y==x)y=pick(p);return[String(x),String(y)]}
+function gen(topic,tier,mode,seen){
+ for(let i=0;i<600;i++){
+  const tp=topic=='mix'?pick(['pp','mul','div','prod','frac']):topic;
+  const [x,y]=two(mode=='num'?NB:LT);
+  const n=pick(TPL[tp][tier])(x,y),ks=Object.keys(n.m);
+  const z=ks.filter(k=>n.m[k]==0).length;if(seen.has(n.h)||z==ks.length||(z&&tier==0))continue;
+  if(!(tier>0||tp=='frac')&&ks.some(k=>n.m[k]<0))continue;
+  let N=1,D2=1;
+  if(mode=='num'){
+   for(const k of ks){const v=n.m[k];if(v>0)N*=k**v;else D2*=k**-v}
+   const c=tier>1?[40000,3000]:[5000,500];if(N>c[0]||D2>c[1])continue;
+   const g=gcd(N,D2);N/=g;D2/=g;
+  }
+  return{tp,n,N,D:D2,mode,h:n.h};
+ }
+}
+const RN={pp:['Hatvány hatványozása','(a<sup>n</sup>)<sup>k</sup> = a<sup>n·k</sup>'],mul:['Azonos alapú hatványok szorzása','a<sup>n</sup>·a<sup>m</sup> = a<sup>n+m</sup>'],div:['Azonos alapú hatványok osztása',FR('a<sup>n</sup>','a<sup>m</sup>')+' = a<sup>n−m</sup>'],prod:['Szorzat hatványozása','(a·b)<sup>n</sup> = a<sup>n</sup>·b<sup>n</sup>'],frac:['Tört hatványozása','('+FR('a','b')+')<sup>n</sup> = '+FR('a<sup>n</sup>','b<sup>n</sup>')],fmul:['Törtek szorzása',FR('a','b')+'·'+FR('c','d')+' = '+FR('a·c','b·d')],recip:['Tört osztása',FR('a','b')+' : '+FR('c','d')+' = '+FR('a','b')+'·'+FR('d','c')]};
+const rules=q=>[...new Set(q.n.r)].map(r=>`<li><b>${RN[r][0]}:</b> <span class="m">${RN[r][1]}</span></li>`).join('');
+const mono=q=>mh(q.n.m);
+const valTxt=q=>q.D==1?`${q.N}`:`${q.N}/${q.D}`;
+const RG={pp:'Hatvány hatványozása: a kitevőket összeszorozzuk.',mul:'Azonos alapú hatványok szorzása: a kitevőket összeadjuk.',div:'Azonos alapú hatványok osztása: a számláló kitevőjéből kivonjuk a nevező kitevőjét.',prod:'Szorzat hatványozása: minden tényezőt hatványozunk, a kitevők szorzódnak.',frac:'Tört hatványozása: a számlálót és a nevezőt is hatványozzuk.',neg:`Átírás negatív kitevővel: ${FR(1,'a<sup>n</sup>')} = a<sup>−n</sup>, illetve ${FR(1,'a<sup>−n</sup>')} = a<sup>n</sup>.`,coll:'Összegyűjtjük az egyes alapok hatványait.',fmul:'Törtek szorzása: a számlálókat és a nevezőket is összeszorozzuk, majd összevonjuk az azonos alapú hatványokat.',recip:'Tört osztása: az osztó reciprokával szorzunk (az osztó számlálóját és nevezőjét felcseréljük).',val:'Kiszámoljuk az értéket; törtnél a legegyszerűbb alakot adjuk meg.'};
+function guide(q){
+ const s=[...q.n.s],fin=mh(q.n.m);
+ if(q.n.c!==fin&&!(s.length&&s[s.length-1].to===fin))s.push(stp(q.n.c,fin,'coll'));
+ if(q.mode=='num')s.push(stp(fin,q.D==1?`${q.N}`:FR(q.N,q.D),'val'));
+ return `<div style="margin-top:8px"><b>A megoldás menete:</b> haladj belülről kifelé: előbb a zárójeles hatványozásokat végezd el, utána az azonos alapú szorzásokat és osztásokat.<ol>${s.map(x=>`<li><span class="m">${x.f} = ${x.to}</span><br><small>${RG[x.r]}</small></li>`).join('')}</ol>${Object.values(q.n.m).some(v=>v<=0)?`<small class="m">Emlékeztető: a<sup>0</sup> = 1, és a<sup>−n</sup> = ${FR(1,'a<sup>n</sup>')}.</small>`:''}</div>`;
+}
+function parseNum(s){s=s.replace(/\s/g,'').replace('−','-').replace(',','.');if(!s)return NaN;if(s.includes('/')){const[a,b]=s.split('/');return +b?+a/+b:NaN}return +s}
+const okNum=(q,s)=>Math.abs(parseNum(s)-q.N/q.D)<1e-9*Math.max(1,q.N/q.D);
+const toInt=s=>{s=s.trim().replace('−','-');return /^[-+]?\d+$/.test(s)?+s:NaN};
+</script>
+<script>
+/* ---------- felület, játékmenet ---------- */
+const $=s=>document.querySelector(s);
+const KEY='hatvanymester9v1';
+let st={xp:0,cor:0,run:0,best:0,rounds:0,perf:0,stars:{},strk:0,day:''};
+try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(x){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(x){}};
+const TOP=[
+ {id:'pp',n:'Hatvány hatványozása',f:'(a<sup>n</sup>)<sup>k</sup> = a<sup>n·k</sup>'},
+ {id:'mul',n:'Azonos alapú hatványok szorzása',f:'a<sup>n</sup>·a<sup>m</sup> = a<sup>n+m</sup>'},
+ {id:'div',n:'Azonos alapú hatványok osztása',f:FR('a<sup>n</sup>','a<sup>m</sup>')+' = a<sup>n−m</sup>'},
+ {id:'prod',n:'Szorzat hatványozása',f:'(a·b)<sup>n</sup> = a<sup>n</sup>·b<sup>n</sup>'},
+ {id:'frac',n:'Tört hatványozása',f:'('+FR('a','b')+')<sup>n</sup> = '+FR('a<sup>n</sup>','b<sup>n</sup>')},
+ {id:'mix',n:'Vegyes kihívás',f:'minden azonosság együtt'}];
+const TIER=['Egyszerű','Összetett','Bonyolult'];
+const stars=(t,i,m)=>st.stars[`${t}.${i}.${m}`]||0;
+const allS=()=>{const a=[];for(const t of TOP)for(let i=0;i<3;i++)for(const m of['num','let'])a.push([t.id,i,m,stars(t.id,i,m)]);return a};
+const BADGES=[
+ ['first','🚀','Első kör','Teljesíts egy kört.',()=>st.rounds>=1],
+ ['perf','🎯','Hibátlan kör','Mind az 5 kérdésre helyesen válaszolsz.',()=>st.perf>=1],
+ ['run','🔥','Tízes sorozat','10 helyes válasz egymás után.',()=>st.best>=10],
+ ['hund','💯','Százas','100 helyes válasz összesen.',()=>st.cor>=100],
+ ['num','🔢','Számtudor','3 csillag egy számos szinten.',()=>allS().some(s=>s[2]=='num'&&s[3]==3)],
+ ['let','🔤','Betűbűvölő','3 csillag egy betűs szinten.',()=>allS().some(s=>s[2]=='let'&&s[3]==3)],
+ ['hard','🧠','Bonyolult? Semmiség!','3 csillag egy bonyolult szinten.',()=>allS().some(s=>s[1]==2&&s[3]==3)],
+ ['base','🧱','Alapok bajnoka','Csillag mind a 12 egyszerű szinten.',()=>allS().filter(s=>s[1]==0).every(s=>s[3]>0)],
+ ['all','👑','Hatványmester','3 csillag mind a 36 szinten.',()=>allS().every(s=>s[3]==3)]];
+const RK=[[0,'Hatványtanonc'],[100,'Kitevő-kezdő'],[250,'Alapfelismerő'],[450,'Azonosság-vadász'],[700,'Hatványhős'],[1000,'Hatványmester']];
+const rank=()=>{let i=0;RK.forEach((r,j)=>{if(st.xp>=r[0])i=j});return i};
+const TH=[
+ ['pp','Hatvány hatványozása','Hatványt úgy hatványozunk, hogy az alapot megtartjuk, a kitevőket összeszorozzuk.','(2<sup>3</sup>)<sup>2</sup> = 2<sup>3·2</sup> = 2<sup>6</sup> = 64','(<i>a</i><sup>4</sup>)<sup>3</sup> = <i>a</i><sup>12</sup>','A kitevőket nem összeadjuk: (a<sup>4</sup>)<sup>3</sup> ≠ a<sup>7</sup>.'],
+ ['mul','Azonos alapú hatványok szorzása','Azonos alapú hatványokat úgy szorzunk, hogy az alapot megtartjuk, a kitevőket összeadjuk.','2<sup>3</sup>·2<sup>4</sup> = 2<sup>3+4</sup> = 2<sup>7</sup> = 128','<i>x</i><sup>5</sup>·<i>x</i><sup>2</sup>·<i>x</i> = <i>x</i><sup>8</sup>','Az alap nem szorzódik: 2<sup>3</sup>·2<sup>4</sup> ≠ 4<sup>7</sup>. Ha nincs kitevő, az 1: x = x<sup>1</sup>.'],
+ ['div','Azonos alapú hatványok osztása','Azonos alapú hatványokat úgy osztunk (törtként felírva), hogy az alapot megtartjuk, a számláló kitevőjéből kivonjuk a nevező kitevőjét. (Az alap nem lehet 0.)',FR('3<sup>6</sup>','3<sup>2</sup>')+' = 3<sup>6−2</sup> = 3<sup>4</sup> = 81',FR('<i>y</i><sup>3</sup>','<i>y</i><sup>5</sup>')+' = <i>y</i><sup>3−5</sup> = <i>y</i><sup>−2</sup>','A kivonás sorrendje számít: számláló kitevője − nevező kitevője. Negatív eredmény esetén negatív kitevőt kapsz.'],
+ ['prod','Szorzat hatványozása','Szorzatot úgy hatványozunk, hogy minden tényezőt külön hatványozunk.','(2·3)<sup>2</sup> = 2<sup>2</sup>·3<sup>2</sup> = 4·9 = 36','(<i>a</i><sup>2</sup><i>b</i>)<sup>3</sup> = <i>a</i><sup>2·3</sup>·<i>b</i><sup>3</sup> = <i>a</i><sup>6</sup><i>b</i><sup>3</sup>','Minden tényezőt hatványozni kell, a már hatványként írt tényezőt is: a<sup>2</sup> kitevője is szorzódik.'],
+ ['frac','Tört hatványozása','A törtet úgy hatványozzuk, hogy a számlálót és a nevezőt is hatványozzuk. (A nevező nem lehet 0.)',`(${FR(2,3)})<sup>3</sup> = ${FR('2<sup>3</sup>','3<sup>3</sup>')} = ${FR(8,27)}`,`(${FR('<i>a</i><sup>2</sup>','<i>b</i>')})<sup>3</sup> = ${FR('<i>a</i><sup>6</sup>','<i>b</i><sup>3</sup>')} = <i>a</i><sup>6</sup>·<i>b</i><sup>−3</sup>`,'A nevezőt sem szabad kihagyni: a nevező kitevője a végén negatív kitevőként is felírható.']];
+let view='play',rd=null;
+
+function head(){
+ const i=rank(),nx=RK[i+1],p=nx?(st.xp-RK[i][0])/(nx[0]-RK[i][0])*100:100;
+ const tot=allS().reduce((a,s)=>a+s[3],0);
+ return `<header class="top"><div><h1>Hatványmester</h1><p>9. évfolyam · hatványazonosságok gyakorlása</p></div>
+ <div class="me"><b>${RK[i][1]}</b> <span class="chip">${st.xp} XP</span><div class="bar"><span style="width:${p}%"></span></div>
+ <small>${nx?`Következő rang: ${nx[0]} XP · `:''}csillagok: ${tot}/108 · napi sorozat: ${st.strk} nap</small></div></header>`;
+}
+function nav(){
+ const t=[['play','Gyakorlás'],['theory','Elmélet'],['badges','Jelvények']];
+ return `<nav>${t.map(a=>`<button class="tab ${view==a[0]?'on':''}" data-v="${a[0]}">${a[1]}</button>`).join('')}</nav>`;
+}
+function vPlay(){
+ return `<p class="lead">Válassz azonosságot, módot és szintet! Egy kör 5 feladat: 3 jó válasz 1 csillagot, 4 jó válasz 2 csillagot, 5 jó válasz 3 csillagot ér. Egymás után adott helyes válaszokkal kombót építhetsz, így több XP jár.</p>
+ <div class="map">${TOP.map(t=>`<section class="tc"><h3>${t.n}</h3><span class="fm m">${t.f}</span>
+ ${['num','let'].map(m=>`<div class="row"><b>${m=='num'?'Számokkal':'Betűkkel'}</b>${[0,1,2].map(i=>`<button class="lv" data-go="${t.id}.${i}.${m}"><span>${TIER[i]}</span><em>${'★'.repeat(stars(t.id,i,m))}${'☆'.repeat(3-stars(t.id,i,m))}</em></button>`).join('')}</div>`).join('')}
+ </section>`).join('')}</div>`;
+}
+function vTheory(){
+ return `<div class="th">${TH.map(t=>{const tp=TOP.find(x=>x.id==t[0]);return `<section class="card"><h3>${t[1]}</h3><span class="fm m">${tp.f}</span><p>${t[2]}</p>
+ <div class="ex1 m"><b>Számokkal:</b> ${t[3]}</div><div class="ex1 m"><b>Betűkkel:</b> ${t[4]}</div><div class="warn"><b>Gyakori hiba:</b> ${t[5]}</div></section>`}).join('')}</div>
+ <section class="card" style="margin-top:16px"><h3>Negatív egész kitevő és nulla kitevő</h3>
+ <span class="fm m"><i>a</i><sup>−n</sup> = ${FR(1,'<i>a</i><sup>n</sup>')}</span> <span class="fm m"><i>a</i><sup>0</sup> = 1</span> <span>(<i>a</i> ≠ 0)</span>
+ <p>A negatív kitevő nem negatív számot jelent: azt mutatja, hogy a hatvány a tört másik oldalára kerül. Ami a számlálóban negatív kitevős, az a nevezőbe kerül pozitív kitevővel, és fordítva.</p>
+ <div class="th" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+ <div><b>Számokkal</b><div class="ex1 m">2<sup>−3</sup> = ${FR(1,'2<sup>3</sup>')} = ${FR(1,8)}</div><div class="ex1 m">(${FR(2,3)})<sup>−2</sup> = (${FR(3,2)})<sup>2</sup> = ${FR(9,4)}</div></div>
+ <div><b>Betűkkel</b><div class="ex1 m"><i>a</i><sup>3</sup>·<i>b</i><sup>−2</sup> = ${FR('<i>a</i><sup>3</sup>','<i>b</i><sup>2</sup>')}</div><div class="ex1 m">${FR('<i>a</i><sup>2</sup>·<i>b</i><sup>−3</sup>','<i>c</i><sup>−1</sup>')} = ${FR('<i>a</i><sup>2</sup>·<i>c</i>','<i>b</i><sup>3</sup>')}</div></div></div>
+ <p><b>Így írd át törtalakra:</b></p>
+ <ol class="m stp"><li>Előbb végezd el az azonosságokkal az egyszerűsítést: minden alaphoz egy kitevő tartozzon.<br>${FR('<i>a</i><sup>3</sup><i>b</i><sup>2</sup>','<i>a</i><sup>5</sup><i>b</i><sup>4</sup>')} = <i>a</i><sup>3−5</sup>·<i>b</i><sup>2−4</sup> = <i>a</i><sup>−2</sup>·<i>b</i><sup>−2</sup></li>
+ <li>A pozitív kitevős tényezők a számlálóba, a negatív kitevősek a nevezőbe kerülnek, a kitevő előjelét elhagyva. Ha a számlálóban nem marad tényező, oda 1 kerül.<br><i>a</i><sup>−2</sup>·<i>b</i><sup>−2</sup> = ${FR(1,'<i>a</i><sup>2</sup><i>b</i><sup>2</sup>')}</li></ol>
+ <div class="warn"><b>Gyakori hiba:</b> 2<sup>−3</sup> nem −8 és nem −6, hanem ${FR(1,8)}. A negatív kitevő a tört „megfordítását” jelenti, nem az előjelet.</div></section>
+ <section class="card" style="margin-top:16px"><h3>Összetett alakok felbontása lépésről lépésre</h3>
+ <p>Ha egy feladathoz több azonosság is kell, ne egyszerre próbáld megoldani. Bontsd kisebb lépésekre:</p>
+ <ol class="stp"><li>Keresd meg a legbelső zárójelet vagy hatványt, és azzal kezdj.</li><li>Egy lépésben mindig egyetlen azonosságot alkalmazz, és írd le az eredményt.</li><li>Különböző alapoknál (vagy betűknél) külön-külön számolj.</li><li>A végén vond össze az azonos alapú hatványokat; számoknál számold ki az értéket is.</li></ol>
+ <div class="th" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:12px">
+ <div><b>Betűs példa</b><div class="ex1 m">${FR('(<i>a</i><sup>2</sup><i>b</i>)<sup>3</sup>·<i>a</i><sup>4</sup>','<i>a</i><sup>5</sup>·<i>b</i><sup>2</sup>')}</div>
+ <ol class="m stp"><li><b>Szorzat hatványozása</b> a számlálóban:<br>(<i>a</i><sup>2</sup><i>b</i>)<sup>3</sup> = <i>a</i><sup>6</sup><i>b</i><sup>3</sup></li>
+ <li><b>Azonos alapú szorzás</b> a számlálóban:<br><i>a</i><sup>6</sup><i>b</i><sup>3</sup>·<i>a</i><sup>4</sup> = <i>a</i><sup>10</sup><i>b</i><sup>3</sup></li>
+ <li><b>Osztás</b> betűnként:<br>${FR('<i>a</i><sup>10</sup><i>b</i><sup>3</sup>','<i>a</i><sup>5</sup><i>b</i><sup>2</sup>')} = <i>a</i><sup>10−5</sup>·<i>b</i><sup>3−2</sup> = <i>a</i><sup>5</sup>·<i>b</i><sup>1</sup></li></ol></div>
+ <div><b>Számos példa</b><div class="ex1 m">(${FR(2,3)})<sup>3</sup>·3<sup>4</sup></div>
+ <ol class="m stp"><li><b>Tört hatványozása:</b><br>(${FR(2,3)})<sup>3</sup> = ${FR('2<sup>3</sup>','3<sup>3</sup>')}</li>
+ <li><b>Szorzás, majd osztás</b> azonos alapon:<br>${FR('2<sup>3</sup>','3<sup>3</sup>')}·3<sup>4</sup> = ${FR('2<sup>3</sup>·3<sup>4</sup>','3<sup>3</sup>')} = 2<sup>3</sup>·3<sup>4−3</sup> = 2<sup>3</sup>·3</li>
+ <li><b>Kiszámolás:</b><br>2<sup>3</sup>·3 = 8·3 = 24</li></ol></div></div></section>
+ <div class="note m"><b>Jó tudni:</b> a<sup>1</sup> = a, vagyis a kitevő nélküli tényező kitevője 1.<br>
+ <b>Számos feladatnál</b> a hatványt ki kell számolni, az eredményt nem hagyhatod hatvány alakban. Ha az eredmény tört, a legegyszerűbb alakját add meg (pl. 8/27, nem 16/54).<br>
+ <b>Betűs feladatnál</b> minden betűvel külön számolj, és csak a kitevőket kell megadnod.</div>`;
+}
+function vBadges(){
+ return `<div class="bd">${BADGES.map(b=>`<div class="bg ${b[4]()?'':'off'}"><div class="ic">${b[4]()?b[1]:'🔒'}</div><b>${b[2]}</b><div>${b[3]}</div></div>`).join('')}</div>`;
+}
+function tplLet(q){
+ return Object.keys(q.n.m).sort().map(k=>`${S(k)}<span class="sx"><input class="ex" data-k="${k}" autocomplete="off" aria-label="${k} kitevője"></span>`).join('<span class="dot">·</span>');
+}
+function vRound(){
+ const q=rd.q,T=TOP.find(t=>t.id==rd.t);
+ return `<div class="rt"><button class="btn ghost" data-v="play">‹ Vissza</button><b>${T.n} · ${TIER[rd.i]} · ${rd.m=='num'?'számokkal':'betűkkel'}</b><span class="chip" id="cmb">Kombó ×${rd.combo}</span></div>
+ <div class="dots" style="margin-bottom:10px">${[0,1,2,3,4].map(j=>`<span class="${j<rd.res.length?(rd.res[j]?'ok':'no'):j==rd.res.length?'cur':''}"></span>`).join('')}</div>
+ <div class="q">${rd.m=='num'?'<div><b>Számítsd ki az értékét!</b></div><div class="warn">A hatványt számold ki, ne hagyd hatvány alakban. Ha az eredmény tört, a legegyszerűbb alakját add meg (pl. 8/27, nem 16/54).</div>':'<div>Egyszerűsítsd, és az egyes betűk mellé írd be a kitevőt! A kitevő negatív vagy nulla is lehet.</div>'}
+ <div class="expr m">${q.h} = ${rd.m=='num'?'<input class="num" id="ans" autocomplete="off" aria-label="Eredmény">':tplLet(q)}</div>
+ <div class="act"><button class="btn" id="go" data-act="chk">Ellenőrzés</button><button class="btn ghost" data-act="hint">Tipp (−5 XP)</button></div>
+ <div id="hint"></div><div id="fb"></div></div>`;
+}
+function vResult(){
+ const s=rd.ok>=5?3:rd.ok==4?2:rd.ok==3?1:0;
+ return `<div class="res"><div class="big">${'★'.repeat(s)}${'☆'.repeat(3-s)}</div><h2>${rd.ok}/5 helyes válasz</h2>
+ <p>Ebben a körben <b>${rd.xp} XP</b>-t szereztél${rd.bonus?` (ebből ${rd.bonus} csillagbónusz)`:''}.</p>
+ ${rd.rk?`<p class="chip">Új rang: ${RK[rank()][1]}</p>`:''}
+ ${rd.nb.length?`<p>Új jelvény: <b>${rd.nb.join(', ')}</b></p>`:''}
+ <p>${s==3?'Hibátlan! Ezt a szintet megcsináltad.':s>0?'Szép munka! Próbáld meg 3 csillagra feljavítani.':'Ehhez még gyakorolj: nézd meg az Elmélet fület, aztán próbáld újra.'}</p>
+ <div class="act" style="justify-content:center"><button class="btn" data-go="${rd.k}">Új kör ugyanitt</button><button class="btn ghost" data-v="play">Vissza a térképre</button></div></div>`;
+}
+function render(){
+ const b=view=='play'?vPlay():view=='theory'?vTheory():view=='badges'?vBadges():view=='round'?vRound():vResult();
+ $('#app').innerHTML=head()+(view=='round'||view=='result'?'':nav())+b;
+ if(view=='round'){const f=$('#ans')||document.querySelector('.ex');f&&f.focus()}
+ window.scrollTo(0,0);
+}
+function start(k){
+ const[t,i,m]=k.split('.');
+ rd={k,t,i:+i,m,q:null,ok:0,combo:0,xp:0,res:[],seen:new Set(),had:BADGES.filter(b=>b[4]()).map(b=>b[0]),rk0:rank(),hint:false,done:false};
+ view='round';nextQ();
+}
+function nextQ(){
+ if(rd.res.length>=5)return fin();
+ rd.q=gen(rd.t,rd.i,rd.m,rd.seen);rd.seen.add(rd.q.h);rd.done=false;rd.hint=false;render();
+}
+function check(){
+ const q=rd.q,fb=$('#fb');let ok,empty=false;
+ if(q.mode=='num'){
+  const v=$('#ans').value.trim(),n=parseNum(v);empty=!v;
+  if(!empty&&isNaN(n)){fb.innerHTML='<div class="fb bad">Számmal vagy a/b alakú törttel válaszolj: a hatványt számold ki!</div>';return}
+  ok=!empty&&okNum(q,v);
+  if(ok&&v.includes('/')){const[a,b]=v.replace(/\s/g,'').replace('−','-').split('/').map(Number);if(gcd(Math.abs(a),Math.abs(b))>1){fb.innerHTML='<div class="fb bad">Az érték jó, de a törtet még egyszerűsítened kell. Add meg a legegyszerűbb alakot!</div>';return}}
+ }else{const ins=[...document.querySelectorAll('.ex')];empty=ins.some(i=>!i.value.trim());ok=!empty&&ins.every(i=>toInt(i.value)===q.n.m[i.dataset.k])}
+ if(empty){fb.innerHTML='<div class="fb bad">Előbb töltsd ki az összes mezőt!</div>';return}
+ rd.res.push(ok);
+ let h;
+ if(ok){
+  rd.combo++;st.run++;st.cor++;st.best=Math.max(st.best,st.run);
+  const g=Math.max(3,10+2*(Math.min(rd.combo,6)-1)-(rd.hint?5:0));rd.xp+=g;st.xp+=g;rd.ok++;
+  h=`<div class="fb ok"><b>Helyes!</b> +${g} XP${rd.combo>1?` · kombó ×${rd.combo}`:''}</div>`;
+ }else{
+  rd.combo=0;st.run=0;
+  const sol=q.mode=='num'?`<span class="m">${mono(q)} = ${valTxt(q)}</span>`:`<span class="m">${mono(q)}</span>`;
+  h=`<div class="fb bad"><b>Ez most nem jött össze.</b> A helyes eredmény: ${sol}${guide(q)}</div>`;
+ }
+ save();
+ document.querySelectorAll('input').forEach(i=>i.disabled=true);
+ fb.innerHTML=h;$('#cmb').textContent=`Kombó ×${rd.combo}`;
+ const go=$('#go');go.textContent=rd.res.length>=5?'Eredmény':'Következő feladat';go.dataset.act='nxt';go.focus();rd.done=true;
+ document.querySelectorAll('.dots span').forEach((s,j)=>{s.className=j<rd.res.length?(rd.res[j]?'ok':'no'):j==rd.res.length?'cur':''});
+}
+function fin(){
+ const s=rd.ok>=5?3:rd.ok==4?2:rd.ok==3?1:0;
+ rd.bonus=s*5;rd.xp+=rd.bonus;st.xp+=rd.bonus;st.rounds++;if(rd.ok==5)st.perf++;
+ st.stars[rd.k]=Math.max(st.stars[rd.k]||0,s);
+ const today=new Date().toISOString().slice(0,10),yest=new Date(Date.now()-864e5).toISOString().slice(0,10);
+ if(st.day!=today){st.strk=st.day==yest?st.strk+1:1;st.day=today}
+ rd.nb=BADGES.filter(b=>b[4]()&&!rd.had.includes(b[0])).map(b=>b[2]);
+ rd.rk=rank()>rd.rk0;save();view='result';render();
+}
+document.addEventListener('click',ev=>{
+ const g=ev.target.closest('[data-go]'),v=ev.target.closest('[data-v]'),a=ev.target.closest('[data-act]');
+ if(g)return start(g.dataset.go);
+ if(v){view=v.dataset.v;return render()}
+ if(a){
+  if(a.dataset.act=='chk')check();
+  else if(a.dataset.act=='nxt')nextQ();
+  else if(a.dataset.act=='hint'&&!rd.done){rd.hint=true;$('#hint').innerHTML=`<div class="hint"><b>Ezeket az azonosságokat használd:</b><ul>${rules(rd.q)}</ul></div>`}
+ }
+});
+document.addEventListener('keydown',ev=>{
+ if(ev.key=='Enter'&&view=='round'){ev.preventDefault();const b=$('#go');b&&b.click()}
+});
+render();
+</script>
+</body>
+</html>
