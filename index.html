@@ -46,10 +46,12 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:13px}
 </div>
 <script>
 /* ÚJ APP HOZZÁADÁSA: másolj be egy új sort ide.
-   grade: 9–12, title, desc, url (az app linkje), icon (emoji) */
+   grade: 9–12, title, desc, folder (az app mappája, ékezet nélkül), icon (emoji)
+   Az app a főoldal melletti mappában van: <folder>/app.html */
 const APPS = [
-  {grade:10, title:"Kombi-Kaland", desc:"Kombinatorika gyakorló: permutáció, variáció, kombináció kalandos feladatokkal.", url:"kombi-kaland/app.html", icon:"🧭"},
-  {grade:10, title:"Hatványvadász", desc:"A hatványozás azonosságainak gyakorlása játékos formában.", url:"hatvanyvadasz/app.html", icon:"🎯"}
+  {grade:9, title:"Hatványmester", desc:"Hatványozás gyakorlása feladatokkal.", folder:"hatvanymester", icon:"⚡"},
+  {grade:10, title:"Kombi-Kaland", desc:"Kombinatorika gyakorló: permutáció, variáció, kombináció kalandos feladatokkal.", folder:"kombi-kaland", icon:"🧭"},
+  {grade:10, title:"Hatványvadász", desc:"A hatványozás azonosságainak gyakorlása játékos formában.", folder:"hatvanyvadasz", icon:"🎯"}
 ];
 const GRADES=[9,10,11,12];
 let current=10;
@@ -73,7 +75,7 @@ function render(){
   }
   list.forEach(a=>{
     const el=document.createElement('a');
-    el.className='card';el.href=a.url;el.target='_blank';el.rel='noopener';
+    el.className='card';el.href=a.folder+'/app.html';
     el.innerHTML='<div class="icon">'+a.icon+'</div><h3>'+a.title+'</h3><p>'+a.desc+'</p><span class="go">Megnyitás →</span>';
     grid.appendChild(el);
   });
