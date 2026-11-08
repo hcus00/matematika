@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="hu"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gyökvadász – négyzetgyökvonás gyakorló</title>
+<style>
+:root{--bg:#16251e;--c:#1f3329;--c2:#284134;--t:#eef3ea;--m:#a5b8aa;--o:#ff8a2b;--g:#8fd16a;--r:#ff6b5e;--bd:#37523f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font:17px/1.5 "Trebuchet MS",Verdana,sans-serif}
+#app{max-width:860px;margin:auto;padding:14px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:.2em 0}
+.hd{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--c);border:2px solid var(--bd);border-radius:16px;padding:10px 14px;margin-bottom:16px}
+.hd h1{font-size:1.4em;color:var(--o);cursor:pointer}
+.xp{flex:1;min-width:150px;font-size:.9em;color:var(--m)}
+.xpb{height:10px;background:var(--bg);border-radius:9px;overflow:hidden;margin-top:3px}.xpb i{display:block;height:100%;background:var(--o)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--o);outline-offset:2px}
+.bt{background:var(--c2);border:2px solid var(--bd);border-radius:12px;padding:8px 14px}
+.bt:hover{border-color:var(--g)}
+.pri{background:var(--o);border-color:var(--o);color:#2a1500;font-weight:bold}
+.pri:hover{border-color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.lst>.tp{display:grid;grid-template-columns:auto 1fr auto;gap:6px 14px;align-items:center;padding:12px 4px;border-bottom:2px dashed var(--bd)}
+.tp .ic{font-size:2em;grid-row:span 2}.tp h3{font-size:1.1em;margin:0}.st{color:var(--o);letter-spacing:2px;white-space:nowrap}
+.tp .row{grid-column:3;grid-row:1/3}
+.mix{margin:16px 0;padding:14px;border:2px solid var(--o);border-radius:16px;background:var(--c)}
+.bdg{display:flex;gap:10px;flex-wrap:wrap}.bdg span{background:var(--c);border:2px solid var(--bd);border-radius:12px;padding:6px 10px;font-size:.9em}.bdg .off{opacity:.35;filter:grayscale(1)}
+.th{background:var(--c);border-radius:16px;padding:6px 18px 14px;font-family:Georgia,serif;font-size:1.08em}
+.th h3{color:var(--o);margin-top:.9em}.th .f{background:var(--bg);border-left:4px solid var(--g);padding:8px 12px;margin:8px 0;border-radius:0 10px 10px 0;line-height:2.1}
+.th .w{border-left-color:var(--r)}
+.bar{height:12px;background:var(--c);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--g);transition:width .3s}
+.meta{color:var(--m);margin:6px 0 10px}
+.q{font:1.7em/2 Georgia,serif;background:var(--c);border-radius:16px;padding:14px 18px;margin-bottom:12px;text-align:center}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.op{background:var(--c2);border:2px solid var(--bd);border-radius:14px;padding:12px;font:1.3em/2 Georgia,serif}
+.op:hover:not(:disabled){border-color:var(--o)}
+.op.ok{background:#2f6b2a;border-color:var(--g)}.op.no{background:#7a2c26;border-color:var(--r)}.op:disabled{cursor:default;color:var(--t)}
+#fb{margin-top:12px;padding:12px 16px;border-radius:14px;background:var(--c)}
+.res{text-align:center;padding:20px}.res .big{font-size:3em;color:var(--o);letter-spacing:6px}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;font-size:.95em;line-height:1.3}
+.fr>span:first-child{border-bottom:1.5px solid currentColor;padding-bottom:2px}.fr>span{padding:0 4px}.fr>span+span{padding-top:4px}
+.rt{white-space:nowrap}.rad{border-top:1.5px solid currentColor;padding:0 2px;margin-left:1px}
+.rt.f{display:inline-flex;align-items:stretch;vertical-align:middle}.rt.f .rad{padding:3px 4px 1px 2px;margin-left:0}
+.sg{width:.7em;height:auto;align-self:stretch;margin-top:.75px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.5px}.sg path{vector-effect:non-scaling-stroke;stroke-linejoin:miter}
+small{font-size:.6em;color:var(--m);font-family:"Trebuchet MS",sans-serif}
+@media(max-width:560px){.tp{grid-template-columns:auto 1fr!important}.tp .row{grid-column:1/3!important;grid-row:auto!important}.q{font-size:1.3em}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><div id="app"></div>
+<script>
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[R(0,a.length-1)],sh=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const gcd=(a,b)=>b?gcd(b,a%b):a,SF=[2,3,5,6,7,10];
+const sq=x=>{x=String(x);return x.includes('class="fr"')?`<span class="rt f"><svg class="sg" viewBox="0 0 10 20" preserveAspectRatio="none"><path d="M0 12L2.5 10.5L5.5 20L10 0"/></svg><span class="rad">${x}</span></span>`:`<span class="rt">√<span class="rad">${x}</span></span>`};
+const isN=(m,p)=>m=='n'||(m!='b'&&Math.random()<p),cd=s=>`&nbsp;<small>(${s})</small>`,nk=(k,e)=>k==1?e:`${k}(${e})`;
+const fr=(n,d)=>`<span class="fr"><span>${n}</span><span>${d}</span></span>`;
+const pw=(b,e)=>`${b}<sup>${e}</sup>`;
+const term=(c,b)=>(c==1?'':c)+sq(b);
+const frm=(c,b,d)=>d==1?term(c,b):fr(term(c,b),d);
+const rt=x=>{const s=Math.round(Math.sqrt(x));return s*s==x?''+s:sq(x)};
+const mk=(q,c,w,ex)=>{c=String(c);const s=new Set([c]),o=[];for(const x of w.map(String)){if(!s.has(x)){s.add(x);o.push(x)}if(o.length==3)break}return{q,c,o:sh([c,...o]),ex}};
+
+/* ---- feladatgenerátorok ---- */
+const gH=m0=>{const nm=isN(m0,.5),t=R(0,nm?3:4),b=pick(nm?['2','3','5']:['a','x','b','y']),m=R(2,6),n=R(2,5),P=pw;
+ if(t==0)return mk(`${P(b,m)} · ${P(b,n)} =`,P(b,m+n),[P(b,m*n),P(b,m+n+1),P(b,m+n-1),P(b,m-n+1)],'Azonos alapú hatványok szorzásánál a kitevők összeadódnak.');
+ if(t==1){const m2=n+R(1,5);return mk(`${fr(P(b,m2),P(b,n))} =`,P(b,m2-n),[P(b,m2+n),P(b,m2*n),P(b,m2-n+1),P(b,m2-n+2)],'Osztásnál a kitevők kivonódnak.')}
+ if(t==2)return mk(`(${P(b,m)})<sup>${n}</sup> =`,P(b,m*n),[P(b,m+n),P(b,m*n+1),P(b,m*n-1),P(b,m*n+2)],'Hatvány hatványozásánál a kitevők szorzódnak.');
+ if(t==3&&nm){const k=R(2,4),j=k+R(1,2),e=R(2,3);return mk(`(${fr(k,j)})<sup>${e}</sup> =`,fr(k**e,j**e),[fr(k*e,j*e),fr(k**e,j),fr(k,j**e),fr(k**e,j*e)],'Tört hatványozásánál a számlálót és a nevezőt is hatványozzuk.')}
+ if(t==3){const k=R(2,4),e=R(2,3);return mk(`(${k}x)<sup>${e}</sup> =`,`${k**e}x<sup>${e}</sup>`,[`${k*e}x<sup>${e}</sup>`,`${k}x<sup>${e}</sup>`,`${k**e}x`,`${k**e}x<sup>${2*e}</sup>`],'Szorzat hatványozásánál mindkét tényezőt hatványozzuk – a számot is!')}
+ const k=R(2,4),e=R(2,4);return mk(`(${fr('x',k)})<sup>${e}</sup> =`,fr(P('x',e),k**e),[fr(P('x',e),k*e),fr(P('x',e),k),fr('x',k**e)],'Tört hatványozásánál a számlálót és a nevezőt is hatványozzuk.')};
+
+const gN=m0=>{const nm=isN(m0,.5),t=nm?R(3,5):pick([0,1,2,6,7,8]),a=R(2,7),x2=pw('x',2);
+ if(t==0)return mk(`(x+${a})<sup>2</sup> =`,`${x2}+${2*a}x+${a*a}`,[`${x2}+${a*a}`,`${x2}+${2*a}x−${a*a}`,`${x2}+${a}x+${a*a}`,`${x2}+${2*a}x+${a}`],'(a+b)² = a² + 2ab + b² – a középső tagot ne felejtsd el!');
+ if(t==1)return mk(`(x−${a})<sup>2</sup> =`,`${x2}−${2*a}x+${a*a}`,[`${x2}−${a*a}`,`${x2}+${2*a}x+${a*a}`,`${x2}−${2*a}x−${a*a}`,`${x2}−${a}x+${a*a}`],'(a−b)² = a² − 2ab + b²; az utolsó tag mindig pozitív.');
+ if(t==2)return mk(`(x+${a})(x−${a}) =`,`${x2}−${a*a}`,[`${x2}+${a*a}`,`${x2}−${2*a}x+${a*a}`,`${x2}−${2*a}`,`${x2}+${2*a}x−${a*a}`],'(a+b)(a−b) = a² − b²; a középső tagok kiesnek.');
+ if(t==6){const a=R(2,4),b=R(1,5);return mk(`(${a}x+${b})<sup>2</sup> =`,`${a*a}${x2}+${2*a*b}x+${b*b}`,[`${a*a}${x2}+${b*b}`,`${a}${x2}+${2*a*b}x+${b*b}`,`${a*a}${x2}+${a*b}x+${b*b}`,`${a*a}${x2}+${2*a*b}x−${b*b}`],'Az első tagot is négyzetre kell emelni: (ax)² = a²x². A középső tag 2·ax·b.')}
+ if(t==7)return mk(`(${sq('x')}+${sq('y')})<sup>2</sup> =${cd('x, y ≥ 0')}`,`x+y+2${sq('xy')}`,['x+y',`x+y+${sq('xy')}`,`x+y+2${sq('x+y')}`,`x+y−2${sq('xy')}`],`(${sq('x')})² = x, (${sq('y')})² = y, a kétszeres szorzat 2${sq('x')}${sq('y')} = 2${sq('xy')}.`);
+ if(t==8)return mk(`(${sq('x')}+${sq('y')})(${sq('x')}−${sq('y')}) =${cd('x, y ≥ 0')}`,'x−y',['x+y','xy','y−x',sq('x−y')],'(a+b)(a−b) = a² − b², itt a = √x, b = √y.');
+ if(t==3){const m=pick(SF),n=R(1,3),p=pick([1,-1]),sg=p>0?'+':'−',op=p>0?'−':'+',S=m+n*n;return mk(`(${sq(m)} ${sg} ${n})<sup>2</sup> =`,`${S}${sg}${2*n}${sq(m)}`,[`${S}`,`${S}${op}${2*n}${sq(m)}`,`${S}${sg}${n}${sq(m)}`,`${S+n}${sg}${2*n}${sq(m)}`],`(${sq(m)})² = ${m}, a kétszeres szorzat: 2·${sq(m)}·${n} = ${2*n}${sq(m)}.`)}
+ const [p,q]=sh(SF).slice(0,2).sort((x,y)=>y-x);
+ if(t==4)return mk(`(${sq(p)}+${sq(q)})(${sq(p)}−${sq(q)}) =`,p-q,[p+q,p*q,'−'+(p-q),sq(p-q)],'Összeg és különbség szorzata: a² − b², így a gyökök eltűnnek.');
+ return mk(`(${sq(p)}+${sq(q)})<sup>2</sup> =`,`${p+q}+2${sq(p*q)}`,[`${p+q}`,`${p+q}+${sq(p*q)}`,`${p+q}+2${sq(p+q)}`,`${p+q}−2${sq(p*q)}`],`${p} + ${q} + 2·${sq(p)}·${sq(q)} = ${p+q} + 2${sq(p*q)}`)};
+
+const gFn=()=>{const t=R(0,4);
+ if(t==0){const k=R(2,15);return mk(`${sq(k*k)} =`,k,['±'+k,k*k,'−'+k,k+1],'A √a az a nemnegatív szám, amelynek négyzete a.')}
+ if(t==1){const n=R(3,20);return mk(`(${sq(n)})<sup>2</sup> =`,n,[sq(n),2*n,n*n,n-1,n+1],'(√a)² = a, ha a ≥ 0.')}
+ if(t==2){const k=R(2,12);return mk(`${sq(`(−${k})<sup>2</sup>`)} =`,k,['−'+k,'±'+k,'nem értelmezhető',k*k],'Előbb négyzetre emelünk: (−k)² = k² pozitív, a gyök pedig nemnegatív: √(k²) = |k|.')}
+ if(t==3){const k=R(2,9);return mk('Melyik kifejezés nem értelmezhető a valós számok körében?',sq('−'+k),[sq(k),sq(0),sq(`(−${k})<sup>2</sup>`),sq(k*k)],'Negatív számból nincs valós négyzetgyök. (A 0 és a (−k)² nemnegatív.)')}
+ const [a,b]=pick([[1,2],[2,3],[3,4],[3,5],[5,6],[4,5]]);return mk(`${sq(fr(a*a,b*b))} =`,fr(a,b),[fr(a*a,b*b),fr(a,b*b),fr(a*a,b),fr(b,a)],'Törtből a számlálóból és a nevezőből is gyököt vonunk.')};
+
+const gAn=()=>{const t=R(0,3);
+ if(t==0){const [p,q]=sh(SF);return mk(`${sq(p)} · ${sq(q)} =`,sq(p*q),[sq(p+q),p*q,`${sq(p)}+${sq(q)}`,sq(Math.abs(p-q))],'√a·√b = √(a·b), ha a, b ≥ 0.')}
+ if(t==1){const n=pick([2,3,5,6,7]),m=R(2,4);return mk(`${sq(n)} · ${sq(n*m*m)} =`,n*m,[rt(n*m),n*m*m,n*n*m,n*m+1,n*m-1,2*n*m],`√${n}·√${n*m*m} = √${n*n*m*m} = ${n*m}`)}
+ if(t==2){const q=pick([2,3,5,6,7]),m=pick([2,3,4,5,6,9]),p=q*m;return mk(`${fr(sq(p),sq(q))} =`,rt(m),[rt(p-q),rt(p+q),String(m),rt(m+1)],`${fr(sq('a'),sq('b'))} = ${sq(fr('a','b'))}, ezért ${fr(sq(p),sq(q))} = ${sq(fr(p,q))} = ${rt(m)}.`)}
+ const s1=pick([4,9,16,25]),s2=pick([36,49,64,81]);
+ return mk('Melyik egyenlőség HAMIS?',`${sq(s1+'+'+s2)} = ${sq(s1)}+${sq(s2)}`,[`${sq(s1+'·'+s2)} = ${sq(s1)}·${sq(s2)}`,`${sq(fr(s2,s1))} = ${fr(sq(s2),sq(s1))}`,`${sq(s1)}·${sq(s1)} = ${s1}`],'Összegből nem lehet tagonként gyököt vonni: √(a+b) ≠ √a + √b. Pl. √(9+16) = 5, de √9 + √16 = 7.')};
+
+const gKn=()=>{
+ if(Math.random()<.7){const n=pick(SF),k=R(2,9);return mk(`${sq(k*k*n)} =`,term(k,n),[term(k*k,n),term(k+1,n),term(k-1,n),term(2*k,n)],`Keresd a legnagyobb négyzetszám osztót: ${k*k*n} = ${k*k}·${n}, ezért √${k*k*n} = ${k}√${n}.`)}
+ const n=pick(SF),k1=R(1,5),k2=k1+R(1,3);
+ return mk(`${sq(k1*k1*n)}+${sq(k2*k2*n)} =`,term(k1+k2,n),[term(k1*k2,n),term(k1+k2+1,n),rt(n*(k1*k1+k2*k2)),term(k1+k2-1,n)],`Mindkettőt egyszerűsítsd: ${term(k1,n)} + ${term(k2,n)} – a hasonló gyökök együtthatói összeadódnak.`)};
+
+const gBn=()=>{
+ if(Math.random()<.6){const n=pick(SF),k=R(2,9);return mk(`${term(k,n)} =`,sq(k*k*n),[sq(k*n),sq(k+n),sq(k*n*n),sq(k*k+n)],`A szorzót négyzetre emelve kerül a gyökjel alá: ${k}√${n} = √(${k}²·${n}) = √${k*k*n}.`)}
+ let a,b,c,d;const B=[2,3,5,6,7,10,11,13];
+ do{a=R(2,6);b=pick(B);c=R(2,6);d=pick(B)}while(a*a*b==c*c*d||Math.abs(a*a*b-c*c*d)>14);
+ const A=term(a,b),C=term(c,d);return mk(`Melyik nagyobb: ${A} vagy ${C}?`,a*a*b>c*c*d?A:C,[a*a*b>c*c*d?C:A,'egyenlők'],`Vidd be a gyökjel alá: ${A} = ${sq(a*a*b)}, ${C} = ${sq(c*c*d)}.`)};
+
+const gEn=()=>{const b=pick(SF);
+ if(Math.random()<.65){const a=R(1,12),g=gcd(a,b);return mk(`${fr(a,sq(b))} =`,frm(a/g,b,b/g),[term(a,b),fr(sq(b),a),term(a*b,b),frm(a/g,b,b/g*b)],`Bővíts ${sq(b)}-vel: ${fr(a,sq(b))}·${fr(sq(b),sq(b))} = ${fr(term(a,b),b)}. Utána egyszerűsíts!`)}
+ const p=R(1,9),q=R(2,4),g=gcd(p,q*b);
+ return mk(`${fr(p,q+sq(b))} =`,frm(p/g,b,q*b/g),[frm(p,b,q),frm(p,b,b),term(p,b),frm(p/g,b,q*b/g*b)],`Bővíts ${sq(b)}-vel: a nevező ${q}·${b} = ${q*b} lesz, a számláló ${term(p,b)}. Utána egyszerűsíts!`)};
+
+const gGn=()=>{
+ if(Math.random()<.5){let m,n;do{m=pick([2,3,5,6,7]);n=R(1,2)}while(n*n>=m);
+  const d=m-n*n,t=R(1,3),k=d*t,mi=Math.random()<.5,sg=mi?'+':'−',op=mi?'−':'+';
+  return mk(`${fr(k,sq(m)+(mi?'−':'+')+n)} =`,term(t,m)+sg+t*n,[term(t,m)+op+t*n,term(k,m)+sg+k*n,term(t,m)+sg+t,term(t+1,m)+sg+t*n],`Bővíts a konjugálttal (${sq(m)}${sg}${n}): az új nevező ${m} − ${n*n} = ${d}, utána egyszerűsíts.`)}
+ const [p,q]=sh(SF).slice(0,2).sort((x,y)=>y-x),d=p-q,t=R(1,3),k=d*t,mi=Math.random()<.5,sg=mi?'+':'−',op=mi?'−':'+';
+ return mk(`${fr(k,sq(p)+(mi?'−':'+')+sq(q))} =`,term(t,p)+sg+term(t,q),[term(t,p)+op+term(t,q),term(k,p)+sg+term(k,q),term(t+1,p)+sg+term(t,q),term(t,p)+sg+term(t+1,q)],`Bővíts a konjugálttal (${sq(p)}${sg}${sq(q)}): az új nevező ${p} − ${q} = ${d}, utána egyszerűsíts.`)};
+
+/* ---- betűs feladatok (a változók nemnegatívak, a nevezők nem nullák) ---- */
+const gFb=()=>{const t=R(0,4);
+ if(t==0)return mk(`Ha x ≥ 0, akkor ${sq(pw('x',2))} =`,'x',['−x','±x',pw('x',2),'nem értelmezhető'],'Nemnegatív x esetén x² gyöke x.');
+ if(t==1)return mk(`Ha x < 0, akkor ${sq(pw('x',2))} =`,'−x',['x','±x',pw('x',2),'nem értelmezhető'],'A gyök nemnegatív, x viszont negatív, ezért az eredmény a nemnegatív −x (azaz |x|).');
+ if(t==2)return mk(`Ha x ≥ 0, akkor (${sq('x')})<sup>2</sup> =`,'x',[sq('x'),'2x',pw('x',2),'−x'],'(√a)² = a, ha a ≥ 0.');
+ if(t==3){const k=R(2,9);return mk(`Mely x értékekre értelmezett a ${sq('x−'+k)} kifejezés a valós számok körében?`,`x ≥ ${k}`,[`x > ${k}`,`x ≤ ${k}`,`x ≥ −${k}`,`x < ${k}`],`A gyökjel alatt nemnegatív szám állhat: x − ${k} ≥ 0, vagyis x ≥ ${k}.`)}
+ return mk(`Ha x, y > 0, akkor ${sq(fr(pw('x',2),pw('y',2)))} =`,fr('x','y'),[fr(pw('x',2),pw('y',2)),fr('x',pw('y',2)),fr(pw('x',2),'y'),fr('y','x')],'Törtből a számlálóból és a nevezőből is gyököt vonunk: √(x²) = x, √(y²) = y.')};
+const gAb=()=>{const t=R(0,3);
+ if(t==0){const n=pick([2,3,5]),m=R(2,4);return mk(`${sq(n+'x')} · ${sq(n*m*m+'x')} =${cd('x ≥ 0')}`,`${n*m}x`,[`${n*m}${sq('x')}`,`${n*m*m}x`,sq(`${n*m}x`),`${n*n*m}x`],`√(${n}x·${n*m*m}x) = √(${n*n*m*m}x²) = ${n*m}x.`)}
+ if(t==1)return mk(`${sq('x')} · ${sq('y')} =${cd('x, y ≥ 0')}`,sq('xy'),[sq('x+y'),'xy',`${sq('x')}+${sq('y')}`,sq('x−y')],'√a·√b = √(a·b), ha a, b ≥ 0.');
+ if(t==2){const q=pick([2,3,5,6,7]),m=pick([2,3,5,6,7,4,9]);return mk(`${fr(sq(q*m+'x'),sq(q+'x'))} =${cd('x > 0')}`,rt(m),[String(m),rt(m+1),sq(m+'x'),rt(q*m)],`√a/√b = √(a/b): az x-szel és a ${q}-val egyszerűsíthetünk, marad ${sq(m)}.`)}
+ return mk(`Melyik egyenlőség HAMIS?${cd('x, y > 0')}`,`${sq('x+y')} = ${sq('x')}+${sq('y')}`,[`${sq('xy')} = ${sq('x')}·${sq('y')}`,`${sq(fr('x','y'))} = ${fr(sq('x'),sq('y'))}`,`(${sq('x')})<sup>2</sup> = x`],'Összegből nem lehet tagonként gyököt vonni: √(x+y) ≠ √x + √y.')};
+const gKb=()=>{const t=R(0,3);
+ if(t==0)return mk(`${sq(pw('x',2)+'y')} =${cd('x, y ≥ 0')}`,`x${sq('y')}`,[`${pw('x',2)}${sq('y')}`,sq('xy'),`2x${sq('y')}`,`x${sq('2y')}`],'x²y = x²·y, és az x² gyöke, x kerül a gyökjel elé.');
+ if(t==1){const n=pick(SF),k=R(2,7);return mk(`${sq(`${k*k*n}${pw('x',2)}`)} =${cd('x ≥ 0')}`,`${k}x${sq(n)}`,[`${k}${pw('x',2)}${sq(n)}`,`${k*k}x${sq(n)}`,`${k+1}x${sq(n)}`,`${k}x${sq(n*k)}`],`${k*k*n}x² = ${k*k}·x²·${n}, ezért a gyök ${k}x${sq(n)}.`)}
+ if(t==2)return mk(`${sq(pw('x',3))} =${cd('x ≥ 0')}`,`x${sq('x')}`,[pw('x',2),`${pw('x',2)}${sq('x')}`,sq('x'),`2x${sq('x')}`],'x³ = x²·x, ezért √(x³) = x√x.');
+ const k1=R(2,4),k2=k1+R(1,2);return mk(`${sq(`${k1*k1}x`)}+${sq(`${k2*k2}x`)} =${cd('x ≥ 0')}`,`${k1+k2}${sq('x')}`,[`${k1*k2}${sq('x')}`,sq(`${k1*k1+k2*k2}x`),`${k1+k2}x`,`${k1+k2+1}${sq('x')}`],`Egyszerűsítés után ${k1}${sq('x')} + ${k2}${sq('x')}: a hasonló gyökök együtthatói összeadódnak.`)};
+const gBb=()=>{const t=R(0,2);
+ if(t==0)return mk(`x${sq('y')} =${cd('x, y ≥ 0')}`,sq(pw('x',2)+'y'),[sq('xy'),sq('x+y'),sq('x'+pw('y',2)),sq('2xy')],'A gyökjel elé írt x négyzetre emelve kerül a gyökjel alá: x√y = √(x²y).');
+ if(t==1){const k=R(2,6),n=pick(SF);return mk(`${k}x${sq(n)} =${cd('x ≥ 0')}`,sq(`${k*k*n}${pw('x',2)}`),[sq(`${k*n}x`),sq(`${k*k*n}x`),sq(`${k*n}${pw('x',2)}`),sq(`${k*k+n}${pw('x',2)}`)],`A ${k}x négyzetre emelve ${k*k}x², ezért ${k}x${sq(n)} = ${sq(`${k*k*n}x<sup>2</sup>`)}.`)}
+ return mk(`x${sq('x')} =${cd('x ≥ 0')}`,sq(pw('x',3)),[sq(pw('x',2)),sq('2x'),sq(pw('x',4)),sq('x')],'x√x = √(x²·x) = √(x³).')};
+const gEb=()=>{const t=R(0,2);
+ if(t==0)return mk(`${fr('x',sq('y'))} =${cd('y > 0')}`,fr(`x${sq('y')}`,'y'),[`x${sq('y')}`,fr(sq('y'),'x'),fr(`x${sq('y')}`,pw('y',2)),fr(`y${sq('x')}`,'x')],`Bővíts ${sq('y')}-nal: ${fr('x',sq('y'))}·${fr(sq('y'),sq('y'))} = ${fr(`x${sq('y')}`,'y')}.`);
+ if(t==1){const k=R(2,9);return mk(`${fr(k,sq('x'))} =${cd('x > 0')}`,fr(`${k}${sq('x')}`,'x'),[`${k}${sq('x')}`,fr(sq('x'),k),fr(`${k}${sq('x')}`,pw('x',2)),fr(`${k}${sq('x')}`,`${k}x`)],`Bővíts ${sq('x')}-szel: a nevező ${sq('x')}·${sq('x')} = x lesz.`)}
+ return mk(`${fr(sq('x'),sq('y'))} =${cd('x ≥ 0, y > 0')}`,fr(sq('xy'),'y'),[fr(sq('x'),'y'),fr(sq('xy'),pw('y',2)),fr(`y${sq('x')}`,'x'),fr(sq('xy'),'x')],`Bővíts ${sq('y')}-nal: a számláló ${sq('x')}·${sq('y')} = ${sq('xy')}, a nevező y.`)};
+const gGb=()=>{const k=R(1,3),mi=Math.random()<.5,sg=mi?'+':'−',op=mi?'−':'+';
+ if(Math.random()<.5){const n=R(1,3),N=n*n;
+  return mk(`${fr(k,sq('x')+(mi?'−':'+')+n)} =${cd('x ≥ 0, a nevező ≠ 0')}`,fr(nk(k,sq('x')+sg+n),`x−${N}`),[fr(nk(k,sq('x')+op+n),`x−${N}`),fr(nk(k,sq('x')+sg+n),`x+${N}`),fr(nk(k,sq('x')+sg+n),`x−${n}`),fr(nk(k,sq('x')+sg+n),`${N}−x`)],`Bővíts a konjugálttal (${sq('x')}${sg}${n}): az új nevező (${sq('x')})² − ${n}² = x − ${N}.`)}
+ return mk(`${fr(k,sq('x')+(mi?'−':'+')+sq('y'))} =${cd('x, y ≥ 0, a nevező ≠ 0')}`,fr(nk(k,sq('x')+sg+sq('y')),'x−y'),[fr(nk(k,sq('x')+op+sq('y')),'x−y'),fr(nk(k,sq('x')+sg+sq('y')),'x+y'),fr(nk(k,sq('x')+sg+sq('y')),sq('x−y')),fr(nk(k,sq('x')+sg+sq('y')),'y−x')],`Bővíts a konjugálttal (${sq('x')}${sg}${sq('y')}): az új nevező x − y.`)};
+const gF=m=>isN(m,.7)?gFn():gFb(),gA=m=>isN(m,.7)?gAn():gAb(),gK=m=>isN(m,.7)?gKn():gKb(),gB=m=>isN(m,.7)?gBn():gBb(),gE=m=>isN(m,.7)?gEn():gEb(),gG=m=>isN(m,.7)?gGn():gGb();
+
+/* ---- elméleti összefoglalók ---- */
+const F=x=>`<div class="f">${x}</div>`,W=x=>`<div class="f w">${x}</div>`;
+const TOP=[
+{id:'hat',ic:'⚡',nm:'Hatványozás azonosságai',g:gH,th:`<h3>Azonos alapú hatványok</h3>${F(`a<sup>n</sup> · a<sup>m</sup> = a<sup>n+m</sup> &nbsp; | &nbsp; ${fr('a<sup>n</sup>','a<sup>m</sup>')} = a<sup>n−m</sup> (a≠0) &nbsp; | &nbsp; (a<sup>n</sup>)<sup>m</sup> = a<sup>n·m</sup>`)}<h3>Azonos kitevőjű hatványok</h3>${F(`(a·b)<sup>n</sup> = a<sup>n</sup>·b<sup>n</sup> &nbsp; | &nbsp; (${fr('a','b')})<sup>n</sup> = ${fr('a<sup>n</sup>','b<sup>n</sup>')} (b≠0)`)}<p>Példa: x<sup>5</sup>·x<sup>2</sup> = x<sup>7</sup>, (x<sup>3</sup>)<sup>4</sup> = x<sup>12</sup>, (2x)<sup>3</sup> = 8x<sup>3</sup>, ${fr('x<sup>6</sup>','x<sup>2</sup>')} = x<sup>4</sup>, ${fr('2<sup>5</sup>','2<sup>2</sup>')} = 2<sup>3</sup> = 8.</p>${W('Gyakori hiba: szorzásnál a kitevőket összeadjuk, hatványozásnál szorozzuk. Szorzat hatványozásánál a számot is hatványozni kell: (2x)³ ≠ 2x³.')}`},
+{id:'nev',ic:'🧮',nm:'Nevezetes azonosságok',g:gN,th:`${F(`(a+b)² = a² + 2ab + b² <br>(a−b)² = a² − 2ab + b² <br>(a+b)(a−b) = a² − b²`)}<h3>Gyökös példák</h3><p>(${sq(3)}+1)² = 3 + 2${sq(3)} + 1 = 4 + 2${sq(3)}</p><p>(${sq(5)}+${sq(2)})(${sq(5)}−${sq(2)}) = 5 − 2 = 3</p><p>Betűs példa (x, y ≥ 0): (${sq('x')}+${sq('y')})² = x + y + 2${sq('xy')}; &nbsp; (${sq('x')}+${sq('y')})(${sq('x')}−${sq('y')}) = x − y.</p>${W('A (√a)² = a miatt a négyzetre emelés után a gyök eltűnik; a kétszeres szorzat (2ab) viszont gyökös marad. Az összeg és különbség szorzata gyöktelen!')}`},
+{id:'fog',ic:'🌱',nm:'A négyzetgyök fogalma',g:gF,th:`<p>Az <b>a ≥ 0</b> szám négyzetgyöke az a <b>nemnegatív</b> szám, amelynek négyzete a.</p>${F(`${sq('a')} ≥ 0 &nbsp; | &nbsp; (${sq('a')})² = a (a≥0) &nbsp; | &nbsp; ${sq('a²')} = |a|`)}<p>Példa: ${sq(49)} = 7, ${sq('(−5)<sup>2</sup>')} = ${sq(25)} = 5, ${sq(fr(9,16))} = ${fr(3,4)}.</p><p>Betűs kifejezésekkel: ${sq('x²')} = |x|, tehát ha x ≥ 0, akkor ${sq('x²')} = x; ha x < 0, akkor ${sq('x²')} = −x. A ${sq('x')} csak x ≥ 0 esetén értelmezett.</p>${W(`Negatív számból nincs valós négyzetgyök: ${sq('−4')} nem értelmezhető. A √25 értéke 5 (nem ±5)!`)}`},
+{id:'az',ic:'🔗',nm:'Négyzetgyökvonás azonosságai',g:gA,th:`<p>Ha a ≥ 0 és b ≥ 0 (osztásnál b > 0):</p>${F(`${sq('a')}·${sq('b')} = ${sq('a·b')} &nbsp; | &nbsp; ${fr(sq('a'),sq('b'))} = ${sq(fr('a','b'))}`)}<p>Példa: ${sq(2)}·${sq(18)} = ${sq(36)} = 6; &nbsp; ${fr(sq(12),sq(3))} = ${sq(4)} = 2.</p><p>Betűs példa (x, y ≥ 0): ${sq('x')}·${sq('y')} = ${sq('xy')}; &nbsp; ${fr(sq('8x'),sq('2x'))} = ${sq(4)} = 2 (x > 0).</p>${W(`Összegre és különbségre nincs ilyen szabály: ${sq('a+b')} ≠ ${sq('a')}+${sq('b')}. Pl. ${sq('9+16')} = 5, de ${sq(9)}+${sq(16)} = 7.`)}`},
+{id:'ki',ic:'⬆️',nm:'Kivitel a gyökjel elé',g:gK,th:`<p>Keresd a gyökjel alatt a legnagyobb négyzetszám osztót:</p>${F(`${sq('k²·n')} = k·${sq('n')}`)}<p>Példa: ${sq(72)} = ${sq('36·2')} = 6${sq(2)}; &nbsp; ${sq(75)} = 5${sq(3)}.</p><p>Összevonás: csak <b>hasonló</b> gyököket lehet összeadni: ${sq(8)}+${sq(18)} = 2${sq(2)}+3${sq(2)} = 5${sq(2)}.</p><p>Betűs példa (x, y ≥ 0): ${sq('x²y')} = x${sq('y')}; &nbsp; ${sq('12x²')} = 2x${sq(3)}; &nbsp; ${sq('x³')} = x${sq('x')}.</p>${W(`Gyakori hiba: ${sq(72)} ≠ 36${sq(2)} – a négyzetszám gyöke kerül ki, nem maga a négyzetszám.`)}`},
+{id:'be',ic:'⬇️',nm:'Bevitel a gyökjel alá',g:gB,th:`<p>A gyökjel elé írt pozitív szám négyzetre emelve kerül a gyökjel alá:</p>${F(`k·${sq('n')} = ${sq('k²·n')} (k ≥ 0)`)}<p>Példa: 3${sq(5)} = ${sq('9·5')} = ${sq(45)}.</p><p><b>Összehasonlítás:</b> 3${sq(5)} és 2${sq(11)} közül melyik a nagyobb? 3${sq(5)} = ${sq(45)}, 2${sq(11)} = ${sq(44)}, tehát 3${sq(5)} a nagyobb.</p><p>Betűs példa (x, y ≥ 0): x${sq('y')} = ${sq('x²y')}; &nbsp; 3x${sq(2)} = ${sq('18x²')}.</p>${W(`Gyakori hiba: 3${sq(5)} ≠ ${sq(15)} – a 3-at négyzetre kell emelni (9·5).`)}`},
+{id:'e1',ic:'✂️',nm:'Gyöktelenítés – egy tag',g:gE,th:`<p>Bővítsd a törtet a nevezőben álló gyökkel:</p>${F(`${fr('a',sq('b'))} = ${fr('a',sq('b'))}·${fr(sq('b'),sq('b'))} = ${fr(`a${sq('b')}`,'b')}`)}<p>Példa: ${fr(6,sq(3))} = ${fr(`6${sq(3)}`,3)} = 2${sq(3)}.</p><p>Ha a nevező p·${sq('b')} alakú, itt is ${sq('b')}-vel bővítünk: ${fr(4,`2${sq(3)}`)} = ${fr(`4${sq(3)}`,6)} = ${fr(`2${sq(3)}`,3)}.</p><p>Betűs példa (y > 0): ${fr('x',sq('y'))} = ${fr(`x${sq('y')}`,'y')}; &nbsp; ${fr(sq('x'),sq('y'))} = ${fr(sq('xy'),'y')} (x ≥ 0).</p>${W('Mindig egyszerűsíts a végén, és ellenőrizd, hogy a nevezőben már nincs gyök.')}`},
+{id:'e2',ic:'🪄',nm:'Gyöktelenítés – két tag',g:gG,th:`<p>Bővítsd a nevező <b>konjugáltjával</b> (ugyanaz a két tag, de ellenkező előjellel), és használd az (a+b)(a−b) = a²−b² azonosságot:</p>${F(`${fr(1,`${sq('a')}−b`)} = ${fr(`${sq('a')}+b`,`(${sq('a')}−b)(${sq('a')}+b)`)} = ${fr(`${sq('a')}+b`,'a − b²')}`)}<p>Példa: ${fr(4,`${sq(5)}−1`)} = ${fr(`4(${sq(5)}+1)`,'5−1')} = ${sq(5)}+1.</p><p>Két gyökös tagnál: ${fr(6,`${sq(5)}+${sq(2)}`)} = ${fr(`6(${sq(5)}−${sq(2)})`,'5−2')} = 2${sq(5)}−2${sq(2)}.</p><p>Betűs példa (x ≥ 0, x ≠ 1): ${fr(1,`${sq('x')}−1`)} = ${fr(`${sq('x')}+1`,'x−1')}; &nbsp; ${fr(1,`${sq('x')}−${sq('y')}`)} = ${fr(`${sq('x')}+${sq('y')}`,'x−y')}.</p>${W('A nevezőben az előjelet váltsd meg, a számlálóban pedig a teljes számlálót szorozd (zárójel!).')}`}
+];
+
+/* ---- állapot ---- */
+const LV=['Magocska','Hajtás','Csemete','Fiatal fa','Terebélyes tölgy','Gyökmester'];
+let S={xp:0,st:{},run:0,best:0};try{Object.assign(S,JSON.parse(localStorage.getItem('gyokvadasz')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('gyokvadasz',JSON.stringify(S))}catch(e){}};
+const star=n=>'★'.repeat(n)+'☆'.repeat(3-n);
+const app=document.getElementById('app');
+let G=null;
+
+function hdr(){const L=Math.min(5,Math.floor(S.xp/150)),p=L==5?100:(S.xp%150)/1.5;
+ return `<div class="hd"><h1 onclick="home()" title="Főoldal">🥕 Gyökvadász</h1><div class="xp">${LV[L]} · ${S.xp} XP<div class="xpb"><i style="width:${p}%"></i></div></div><button class="bt" onclick="home()">Főoldal</button></div>`}
+
+function home(){G=null;
+ const all=TOP.every(t=>(S.st[t.id]||0)>0),any3=Object.values(S.st).some(v=>v==3);
+ const B=[['🌱','Első csillag',Object.keys(S.st).length>0],['🌳','Mind a 8 téma megvan',all],['🏆','Három csillag',any3],['🔥','10-es sorozat',S.best>=10],['🧙','Vegyes kihívás kész',(S.st.mix||0)>0]];
+ app.innerHTML=hdr()+`<h2>Témák</h2><div class="lst">${TOP.map((t,i)=>`<div class="tp"><div class="ic">${t.ic}</div><h3>${t.nm}</h3><div class="row"><button class="bt" onclick="theory(${i})">Összefoglaló</button><button class="bt pri" onclick="choose(${i})">Gyakorlás</button></div><div class="st">${star(S.st[t.id]||0)}</div></div>`).join('')}</div>
+ <div class="mix"><h2>Vegyes kihívás</h2><p>20 kérdés az összes témából, dupla XP-vel.</p><div class="row"><button class="bt pri" onclick="play(-1)">Indítás</button><span class="st">${star(S.st.mix||0)}</span></div></div>
+ <h2>Jelvények</h2><div class="bdg">${B.map(b=>`<span class="${b[2]?'':'off'}">${b[0]} ${b[1]}</span>`).join('')}</div>`;
+ window.scrollTo(0,0)}
+
+function theory(i){const t=TOP[i];
+ app.innerHTML=hdr()+`<h2>${t.ic} ${t.nm}</h2><div class="th">${t.th}</div><p class="row"><button class="bt pri" onclick="choose(${i})">Gyakorlás indítása</button><button class="bt" onclick="home()">Vissza</button></p>`;window.scrollTo(0,0)}
+
+function choose(i){const t=TOP[i];app.innerHTML=hdr()+`<h2>${t.ic} ${t.nm}</h2><p>Milyen feladatokat szeretnél?</p><p class="row"><button class="bt pri" onclick="play(${i})">Vegyes (főleg számok)</button><button class="bt" onclick="play(${i},'n')">Csak számok</button><button class="bt" onclick="play(${i},'b')">Csak betűs kifejezések</button></p><p class="meta">Betűs feladatoknál a gyökjel alatti változók nemnegatívak, a nevezők pedig nem nullák.</p><p><button class="bt" onclick="home()">Vissza</button></p>`;window.scrollTo(0,0)}
+function play(i,m){const n=i<0?20:8,gens=TOP.map(t=>t.g),qs=[],seen=new Set();
+ while(qs.length<n){const q=(i<0?pick(gens):TOP[i].g)(m);if(!seen.has(q.q)||seen.size>30){seen.add(q.q);qs.push(q)}}
+ G={i,m,n,qs,k:0,ok:0,lock:false};ask()}
+
+function ask(){const q=G.qs[G.k];G.lock=false;
+ app.innerHTML=hdr()+`<h2>${G.i<0?'Vegyes kihívás':TOP[G.i].nm}</h2><div class="bar"><i style="width:${G.k/G.n*100}%"></i></div><div class="meta">${G.k+1}. kérdés / ${G.n} · helyes: ${G.ok} · sorozat: ${S.run}</div><div class="q">${q.q}</div><div class="opts">${q.o.map((o,j)=>`<button class="op" onclick="ans(${j})">${o}</button>`).join('')}</div><div id="fb" hidden></div>`}
+
+function ans(j){if(G.lock)return;G.lock=true;const q=G.qs[G.k],good=q.o[j]===q.c,bs=document.querySelectorAll('.op');
+ bs.forEach((b,x)=>{b.disabled=true;if(q.o[x]===q.c)b.classList.add('ok');else if(x==j)b.classList.add('no')});
+ let fb;
+ if(good){G.ok++;S.run++;S.best=Math.max(S.best,S.run);const g=(G.i<0?20:10)+(S.run>=3?5:0);S.xp+=g;fb=`<b>Helyes!</b> +${g} XP${S.run>=3?` (sorozat bónusz: ${S.run} egymás után)`:''}`}
+ else{S.run=0;fb=`<b>Nem egészen.</b> A helyes válasz: ${q.c}<br>${q.ex}`}
+ save();const last=G.k+1==G.n,f=document.getElementById('fb');f.hidden=false;
+ f.innerHTML=`${fb}<p><button class="bt pri" onclick="${last?'finish()':'G.k++;ask()'}">${last?'Eredmény':'Tovább'}</button></p>`;
+ f.querySelector('button').focus()}
+
+function finish(){const r=G.ok/G.n,s=r==1?3:r>=.85?2:r>=.6?1:0,id=G.i<0?'mix':TOP[G.i].id;
+ S.st[id]=Math.max(S.st[id]||0,s);save();
+ const msg=['Gyakorolj még egy kicsit, menni fog!','Jó kezdés, a következő kör még jobb lesz.','Szép munka!','Hibátlan kör!'][s];
+ app.innerHTML=hdr()+`<div class="res"><h2>${msg}</h2><div class="big">${star(s)}</div><p>${G.ok} / ${G.n} helyes válasz · legjobb sorozatod: ${S.best}</p><p class="row" style="justify-content:center"><button class="bt pri" onclick="play(${G.i},${G.m?`'${G.m}'`:'undefined'})">Új kör</button>${G.i>=0?`<button class="bt" onclick="theory(${G.i})">Összefoglaló</button>`:''}<button class="bt" onclick="home()">Főoldal</button></p></div>`;
+ window.scrollTo(0,0)}
+home();
+</script></body></html>
