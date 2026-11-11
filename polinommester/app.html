@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Polinommester – 9. évfolyam</title>
+<style>
+:root{--paper:#f7fafd;--line:#d3e2f1;--ink:#1c2e72;--red:#c4202f;--green:#1d7a49;--mute:#5b6a99;--gold:#ffd84d}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 "Segoe UI",system-ui,sans-serif;color:var(--ink);background-color:var(--paper);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:24px 24px;min-height:100vh}
+header{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--ink);color:#fff}
+h1{margin:0;font:700 22px Georgia,serif}
+.xp{flex:1;min-width:190px;max-width:330px;font-size:14px}
+.xp div:first-child{display:flex;justify-content:space-between;margin-bottom:4px}
+.bar{height:10px;background:#ffffff33;border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);width:0}
+main{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+.lead{margin:0 0 16px;color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:4px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0;font-size:17px}
+.m{font-family:"Cambria Math","STIX Two Math",Georgia,serif}
+.m i{font-style:italic}
+.eg{color:var(--mute);font-size:18px}
+.stars{color:#d49a00;letter-spacing:2px}
+.row{display:flex;gap:8px;margin-top:auto}
+button{font:inherit;font-weight:600;border:2px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:7px 14px;cursor:pointer}
+button.ghost{background:#fff;color:var(--ink)}
+button:hover{filter:brightness(1.15)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.dots{margin:6px 0 10px;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.dot{width:14px;height:14px;border:2px solid var(--ink);border-radius:50%;background:#fff}
+.dot.ok{background:var(--green);border-color:var(--green)}
+.dot.half{background:#e6a817;border-color:#e6a817}
+.dot.no{background:var(--red);border-color:var(--red)}
+.dot.now{box-shadow:0 0 0 3px var(--gold)}
+#stk{margin-left:auto;color:var(--mute);font-size:14px}
+.seg{display:flex;gap:6px;align-items:center;margin-bottom:12px;font-size:14px;color:var(--mute);flex-wrap:wrap}
+.seg button{padding:3px 11px;background:#fff;color:var(--ink);font-size:14px}
+.seg button.on{background:var(--ink);color:#fff}
+.task,.panel{background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:4px;padding:16px 20px;margin-bottom:14px}
+.cap{color:var(--mute);font-size:14px}
+.big{font-size:clamp(24px,5.5vw,38px);margin-top:6px;overflow-x:auto;white-space:nowrap}
+.big sup,.pv sup,.ex sup{font-size:.62em}
+.ans input{width:100%;font:22px "Cambria Math",Georgia,serif;padding:10px 12px;border:2px solid var(--ink);border-radius:6px;color:var(--ink)}
+.pv{min-height:34px;padding:6px 2px;color:var(--mute);font-size:20px}
+.pad{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}
+.pad button{min-width:42px;padding:5px 10px;background:#fff;color:var(--ink);font:600 18px "Cambria Math",Georgia,serif}
+.fb{padding:12px 16px;border-radius:4px;margin-top:12px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--mute)}
+.fb.ok{border-left-color:var(--green)}.fb.no{border-left-color:var(--red)}
+.fb b.m{font-size:19px}
+.fb button{margin-top:10px}
+.panel h2{margin:0 0 8px;font:700 22px Georgia,serif}
+.panel p,.panel li{max-width:64ch}
+.ex{font-size:20px;background:var(--paper);padding:8px 12px;border-radius:4px}
+.res{text-align:center}
+.grade{display:inline-block;font:700 110px/1 Georgia,serif;color:var(--red);transform:rotate(-7deg);border-bottom:5px solid var(--red);margin:6px 0 14px;padding:0 14px}
+.res .row{justify-content:center;margin-top:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Polinommester</h1>
+  <div class="xp"><div><span id="lv"></span><span id="xpn"></span></div><div class="bar"><i id="xb"></i></div></div>
+</header>
+<main id="app"></main>
+<script>
+const $=s=>document.querySelector(s);
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[ri(0,a.length-1)];
+const nz=(a,b)=>{let v=0;while(!v)v=ri(a,b);return v};
+const nk=()=>{let v;do v=nz(-9,9);while(Math.abs(v)<2);return v};
+const sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const tm=(c,m)=>!m?''+c:c==1?m:c==-1?'-'+m:c+m;
+const sum=ts=>ts.reduce((s,t,i)=>i?s+(t[0]=='-'?t:'+'+t):t,'');
+const br=ts=>'('+sum(ts)+')';
+const rp=ms=>ms.map(m=>tm(nz(-9,9),m));
+const wp=t=>t[0]=='-'?'('+t+')':t;
+const w=t=>t.length>1?'('+t+')':t;
+
+/* ---------- polinom-számolás ---------- */
+const clean=p=>{for(const k in p)if(!p[k])delete p[k];return p};
+const add=(p,q)=>{const r={...p};for(const k in q)r[k]=(r[k]||0)+q[k];return clean(r)};
+const neg=p=>{const r={};for(const k in p)r[k]=-p[k];return r};
+const mul=(p,q)=>{const r={};for(const a in p)for(const b in q){const k=(a+b).split('').sort().join('');r[k]=(r[k]||0)+p[a]*q[b]}return clean(r)};
+const cst=n=>n?{'':n}:{};
+const norm=s=>s.toLowerCase().replace(/²/g,'^2').replace(/³/g,'^3').replace(/[−–—]/g,'-').replace(/[·×⋅]/g,'*').replace(/\s+/g,'');
+function parse(s){let i=0;const pk=()=>s[i];
+ const atom=()=>{const c=pk();
+  if(c=='('){i++;const r=expr();if(pk()!=')')throw 0;i++;return r}
+  if(/\d/.test(c)){const m=s.slice(i).match(/^\d+/)[0];i+=m.length;return cst(+m)}
+  if(/[a-z]/.test(c)){i++;return {[c]:1}}
+  throw 0};
+ const fac=()=>{let b=atom();
+  if(pk()=='^'){i++;const m=(s.slice(i).match(/^\d+/)||[])[0];if(!m||+m>8)throw 0;i+=m.length;let r={'':1};for(let k=0;k<+m;k++)r=mul(r,b);b=r}
+  return b};
+ const term=()=>{let sg=1;while(pk()=='+'||pk()=='-')if(s[i++]=='-')sg=-sg;
+  let r=fac();while(i<s.length&&/[*a-z0-9(]/.test(pk())){if(pk()=='*')i++;r=mul(r,fac())}
+  return sg<0?neg(r):r};
+ const expr=()=>{let r=term();while(pk()=='+'||pk()=='-'){const o=s[i++];const t=term();r=add(r,o=='-'?neg(t):t)}return r};
+ const r=expr();if(i<s.length)throw 0;return r}
+const same=(p,q)=>JSON.stringify(Object.keys(p).sort().map(k=>[k,p[k]]))==JSON.stringify(Object.keys(q).sort().map(k=>[k,q[k]]));
+const ms=k=>[...new Set(k)].map(l=>{const n=k.split(l).length-1;return n>1?l+'^'+n:l}).join('');
+const fmt=p=>{const ks=Object.keys(p).sort((a,b)=>b.length-a.length||(a<b?-1:1));return ks.length?sum(ks.map(k=>tm(p[k],ms(k)))):'0'};
+function pretty(s){let o='',prev='';
+ for(let i=0;i<s.length;i++){const c=s[i];
+  if(c=='^'){const m=s.slice(i+1).match(/^\d+/);if(!m){o+='^';prev=c;continue}o+='<sup>'+m[0]+'</sup>';i+=m[0].length;prev='d'}
+  else if(/[a-z]/.test(c)){o+='<i>'+c+'</i>';prev=c}
+  else if(c=='+'||c=='-'){const u=i==0||'(*+-'.includes(prev),g=c=='-'?'−':'+';o+=u?g:' '+g+' ';prev=c}
+  else if(c=='*'){o+='·';prev=c}
+  else{o+=c;prev=c}}
+ return o}
+
+/* ---------- ellenőrzés ---------- */
+function judge(raw,q){
+ const n=norm(raw);if(!n)return 'empty';
+ let p;try{p=parse(n)}catch(e){return 'err'}
+ if(!same(p,parse(q)))return 'wrong';
+ if(n.includes('('))return 'bracket';
+ const seen={};
+ for(const t of n.split(/(?=[+-])/)){if(!t)continue;
+  let tp;try{tp=parse(t)}catch(e){return 'err'}
+  const ks=Object.keys(tp);if(ks.length!=1)continue;
+  const L=t.replace(/\^\d+/g,'').match(/[a-z]/g)||[];
+  if(new Set(L).size<L.length)return 'rep';
+  if(seen[ks[0]])return 'like';seen[ks[0]]=1}
+ return 'ok'}
+
+/* ---------- feladatgenerátorok ---------- */
+function g1(d){
+ const pool=d==1?['x','']:d==2?['x^2','x','']:sh(['x^2','xy','y^2','x','y','']).slice(0,3);
+ const ts=[];
+ for(const m of pool){let cs;do cs=Array.from({length:d==3?2:2+(d==2?ri(0,1):0)},()=>nz(-9,9));while(!cs.reduce((a,b)=>a+b));cs.forEach(c=>ts.push(tm(c,m)))}
+ return {t:'t1',q:sum(sh(ts))}}
+function g2(d){
+ if(d==1)return {t:'t2',q:br(rp(['x','']))+pick(['+','-'])+br(rp(['x','']))};
+ if(d==2)return {t:'t2',q:tm(nz(-9,9),'x')+pick(['+','-'])+br(rp(['x','']))+pick(['+','-'])+br(rp(['x','']))};
+ return {t:'t2',q:br(rp(['x^2','x','']))+pick(['+','-'])+br(rp(['x^2','x','']))+pick(['+','-'])+br(rp(['x^2','x']))}}
+function g3(d){
+ let k,B,mid=true;
+ if(d==1){k=''+nk();B=rp(['x',''])}
+ else if(d==2){k=tm(nk(),'x');B=pick([rp(['x','']),rp(['x^2','x',''])])}
+ else{return {t:'t3',q:tm(ri(2,5),'x')+br(rp(['x','']))+pick(['+','-'])+ri(2,4)+br(rp(['x^2','x']))}}
+ return {t:'t3',q:k+br(B),mid:B.map(t=>wp(k)+'*'+wp(t)).join('+')}}
+function g4(d){
+ let A,B;
+ if(d==1){A=['x',''+nz(-9,9)];B=['x',''+nz(-9,9)]}
+ else if(d==2){A=[tm(nz(-4,4),'x'),''+nz(-9,9)];B=[tm(nz(-4,4),'x'),''+nz(-9,9)]}
+ else{A=rp(['x^2','x','']).map((t,j)=>j?t:tm(nz(-4,4),'x^2'));B=rp(['x','']);if(Math.random()<.5)[A,B]=[B,A]}
+ return {t:'t4',q:br(A)+br(B),mid:A.flatMap(a=>B.map(b=>wp(a)+'*'+wp(b))).join('+')}}
+function g5(d){
+ const A=d==1?'x':tm(ri(2,4),'x'),B=d==3?tm(ri(2,5),'y'):''+ri(1,9);
+ if(Math.random()<.6){const s=pick(['+','-']);
+  return {t:'t5',q:'('+A+s+B+')^2',mid:w(A)+'^2'+s+'2*'+A+'*'+B+'+'+w(B)+'^2'}}
+ const q=Math.random()<.5?'('+A+'+'+B+')('+A+'-'+B+')':'('+A+'-'+B+')('+A+'+'+B+')';
+ return {t:'t5',q,mid:w(A)+'^2-'+w(B)+'^2'}}
+const g6=d=>pick([g1,g2,g3,g4,g5])(d);
+
+const TOPICS=[
+{id:'t1',name:'Egynemű tagok összevonása',eg:['3x^2+2x^2','5x^2'],gen:g1,
+ h:'Csak azokat vonhatod össze, amelyeknek a betűs része teljesen megegyezik (például x és x² nem egynemű).',
+ th:'<p>Két tag <b>egynemű</b>, ha a betűs részük (a változók és a kitevőik) teljesen megegyezik. Például {{3x^2}} és {{-5x^2}} egynemű, de {{3x^2}} és {{3x}} nem.</p><p>Az egynemű tagokat úgy vonjuk össze, hogy az együtthatókat összeadjuk, a betűs rész változatlan marad.</p><p class="ex">{{3x^2-5x+2x^2+7x-4}} = {{5x^2+2x-4}}</p>'},
+{id:'t2',name:'Zárójelfelbontás előjelszabállyal',eg:['5x-(2x-3)','3x+3'],gen:g2,
+ h:'Pluszjel előtt a zárójel egyszerűen elhagyható, mínuszjel előtt minden tag előjele az ellenkezőjére változik.',
+ th:'<p>Ha a zárójel előtt <b>+</b> jel áll, a zárójel egyszerűen elhagyható. Ha <b>−</b> jel áll előtte, a zárójelben minden tag előjele az ellenkezőjére változik.</p><p class="ex">{{5x-(2x-3)}} = {{5x-2x+3}} = {{3x+3}}</p>'},
+{id:'t3',name:'Szorzás egytaggal',eg:['-2x(x^2-3x+4)','-2x^3+6x^2-8x'],gen:g3,
+ h:'A zárójel előtti tagot szorozd meg a zárójel minden tagjával. Figyelj az előjelekre és a kitevőkre!',
+ th:'<p>A zárójel előtti tagot a zárójel <b>minden</b> tagjával megszorozzuk: a(b + c) = ab + ac. Az együtthatókat összeszorozzuk, az azonos betűk kitevői összeadódnak: {{x*x^2}} = {{x^3}}.</p><p class="ex">{{-2x(x^2-3x+4)}} = {{-2x^3+6x^2-8x}}</p>'},
+{id:'t4',name:'Zárójeles kifejezések szorzása',eg:['(x+3)(x-5)','x^2-2x-15'],gen:g4,
+ h:'Minden tagot szorozz minden taggal, és utána vond össze az egynemű tagokat.',
+ th:'<p>Minden tagot minden taggal megszorzunk, a végén összevonjuk az egynemű tagokat: (a + b)(c + d) = ac + ad + bc + bd.</p><p class="ex">{{(x+3)(x-5)}} = {{x^2-5x+3x-15}} = {{x^2-2x-15}}</p>'},
+{id:'t5',name:'Nevezetes azonosságok',eg:['(2x-3)^2','4x^2-12x+9'],gen:g5,
+ h:'(a+b)² = a²+2ab+b², (a−b)² = a²−2ab+b², (a+b)(a−b) = a²−b². Ne felejtsd el a közbülső tagot!',
+ th:'<p>Három nevezetes azonosság:</p><ul><li>{{(a+b)^2}} = {{a^2+2ab+b^2}}</li><li>{{(a-b)^2}} = {{a^2-2ab+b^2}}</li><li>{{(a+b)(a-b)}} = {{a^2-b^2}}</li></ul><p class="ex">{{(2x-3)^2}} = {{4x^2-12x+9}}</p><p>Vigyázz: {{(a+b)^2}} nem egyenlő a {{a^2+b^2}} kifejezéssel, mert hiányzik a közbülső tag!</p>'},
+{id:'t6',name:'Vegyes feladatok',eg:['5x-(2x-3)+(x+1)(x-2)','x^2+2x+1'],gen:g6,
+ h:'',th:'<p>Vegyes feladatok az öt témakörből. Neked kell felismerned, melyik módszer kell: összevonás, zárójelfelbontás, szorzás egytaggal vagy polinommal, nevezetes azonosság.</p>'}];
+const TB=Object.fromEntries(TOPICS.map(t=>[t.id,t]));
+const LV=['Újonc','Tagfelismerő','Összevonó','Zárójelbontó','Szorzómester','Polinommester'];
+
+/* ---------- mentés, állapot ---------- */
+let P;try{P=JSON.parse(localStorage.getItem('polinommester'))}catch(e){}
+P=P||{xp:0,t:{}};
+const save=()=>{try{localStorage.setItem('polinommester',JSON.stringify(P))}catch(e){}};
+const cnt=id=>(P.t[id]||{c:0}).c;
+const stars=id=>{const n=Math.min(3,Math.floor(cnt(id)/10));return '★'.repeat(n)+'☆'.repeat(3-n)};
+const sug=id=>cnt(id)<8?1:cnt(id)<20?2:3;
+let S={v:'home'};
+function head(){const lv=Math.min(LV.length,Math.floor(P.xp/100)+1);
+ $('#lv').textContent=lv+'. szint · '+LV[lv-1];$('#xpn').textContent=P.xp+' XP';$('#xb').style.width=(P.xp%100)+'%'}
+function render(){head();const a=$('#app');({home,th,p:prac,r:res})[S.v](a);window.scrollTo(0,0)}
+
+function home(a){
+ a.innerHTML='<p class="lead">Gyakorold a polinomokkal végzett műveleteket! Egy kör 8 feladat. Minden témánál 3 csillagot szerezhetsz.</p><div class="grid">'+
+ TOPICS.map(t=>`<div class="card"><h3>${t.name}</h3><div class="m eg">${pretty(t.eg[0])} = ${pretty(t.eg[1])}</div><div class="stars" title="Helyes válaszok: ${cnt(t.id)}">${stars(t.id)}</div><div class="row"><button class="ghost" onclick="S={v:'th',id:'${t.id}'};render()">Elmélet</button><button onclick="start('${t.id}')">Gyakorlás</button></div></div>`).join('')+'</div>'}
+function th(a){const t=TB[S.id];
+ a.innerHTML=`<div class="top"><button class="ghost" onclick="S={v:'home'};render()">← Témák</button></div><div class="panel"><h2>${t.name}</h2>${t.th.replace(/\{\{(.+?)\}\}/g,(_,e)=>'<b class="m">'+pretty(e)+'</b>')}</div><button onclick="start('${t.id}')">Gyakorlás indítása</button>`}
+
+/* ---------- gyakorlás ---------- */
+function start(id,d){S={v:'p',id,d:d||sug(id),n:0,sc:0,xp:0,streak:0,rs:[],last:''};nextQ()}
+function nextQ(){
+ if(S.n>=8){S.v='r';render();return}
+ let k;do k=TB[S.id].gen(S.d);while(k.q==S.last);
+ S.last=k.q;S.task=k;S.n++;S.tries=0;S.done=false;S.v='p';render()}
+function setD(j){S.d=j;document.querySelectorAll('.seg button').forEach((b,k)=>b.classList.toggle('on',k==j-1))}
+function prac(a){const T=TB[S.id];
+ a.innerHTML=`<div class="top"><button class="ghost" onclick="S={v:'home'};render()">← Témák</button><b>${T.name}</b></div>
+ <div class="dots">${Array.from({length:8},(_,j)=>`<span class="dot ${S.rs[j]||''}${j==S.n-1?' now':''}"></span>`).join('')}<span id="stk">Sorozat: ${S.streak}</span></div>
+ <div class="seg">Nehézség: ${['Könnyű','Közepes','Nehéz'].map((x,j)=>`<button class="${S.d==j+1?'on':''}" onclick="setD(${j+1})">${x}</button>`).join('')}<span>(a következő feladattól érvényes)</span></div>
+ <div class="task"><div class="cap">Írd fel zárójel nélkül, összevonva:</div><div class="m big">${pretty(S.task.q)}</div></div>
+ <div class="ans"><input id="in" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Válasz" placeholder="Írd ide a válaszod, pl. 3x^2-5x+2" oninput="pv()" onkeydown="if(event.key=='Enter')go()">
+ <div id="pvw" class="m pv"></div>
+ <div class="pad">${['x','y','^','(',')','+','-'].map(c=>`<button onclick="ins('${c}')">${c=='-'?'−':c}</button>`).join('')}<button onclick="bs()" aria-label="Törlés">⌫</button></div>
+ <button id="ck" onclick="go()">Ellenőrzés</button></div><div id="fb" aria-live="polite"></div>`;
+ $('#in').focus()}
+function pv(){const v=norm($('#in').value);let h='';
+ if(v){try{parse(v);h='Így értem: '+pretty(v)}catch(e){h='(a kifejezés még nem teljes)'}}
+ $('#pvw').innerHTML=h}
+function ins(t){const e=$('#in'),a=e.selectionStart,b=e.selectionEnd;e.value=e.value.slice(0,a)+t+e.value.slice(b);e.focus();e.selectionStart=e.selectionEnd=a+t.length;pv()}
+function bs(){const e=$('#in'),a=e.selectionStart,b=e.selectionEnd;const s=a==b?Math.max(0,a-1):a;e.value=e.value.slice(0,s)+e.value.slice(b);e.focus();e.selectionStart=e.selectionEnd=s;pv()}
+function fb(c,h){$('#fb').innerHTML=`<div class="fb ${c}">${h}</div>`}
+function finish(){S.done=true;$('#in').disabled=true;$('#ck').textContent=S.n>=8?'Eredmény':'Következő feladat';$('#stk').textContent='Sorozat: '+S.streak;
+ const d=document.querySelectorAll('.dot')[S.n-1];d.className='dot '+S.rs[S.n-1];save();head()}
+function go(){
+ if(S.done){nextQ();return}
+ const T=S.task,r=judge($('#in').value,T.q),ans=fmt(parse(T.q));
+ if(r=='empty')return fb('',' Írd be a válaszod, vagy használd az alatta lévő gombokat.');
+ if(r=='err')return fb('',' Ezt a kifejezést nem tudom értelmezni. Ellenőrizd a zárójeleket és a jeleket!');
+ if(r=='bracket')return fb('',' Az érték stimmel, de a válaszban még van zárójel. Bontsd fel teljesen!');
+ if(r=='like')return fb('',' Az érték stimmel, de még van összevonható tag. Vond össze őket!');
+ if(r=='rep')return fb('',' Az érték stimmel, de az azonos betűket hatvány alakban írd (x·x helyett x²).');
+ if(r=='ok'){const first=S.tries==0,g=first?10+Math.min(S.streak,5):5;
+  S.streak++;S.sc++;S.xp+=g;P.xp+=g;(P.t[S.id]=P.t[S.id]||{c:0}).c++;S.rs[S.n-1]=first?'ok':'half';
+  fb('ok',`<b>Helyes!</b> +${g} XP${first&&S.streak>2?' (sorozat-bónusszal)':''}`);return finish()}
+ S.tries++;
+ if(S.tries==1)return fb('no',`<b>Még nem jó.</b> Tipp: ${TB[T.t].h} Próbáld újra!`);
+ S.streak=0;S.rs[S.n-1]='no';
+ fb('no',`<b>Most nem sikerült.</b> A megoldás: <b class="m">${pretty(ans)}</b>`+(T.mid?`<div class="m">Lépésenként: ${pretty(T.mid)} = ${pretty(ans)}</div>`:''));finish()}
+
+function res(a){
+ const p=S.sc/8,g=p>=.9?5:p>=.75?4:p>=.6?3:p>=.4?2:1;
+ a.innerHTML=`<div class="panel res"><h2>Kör vége</h2><div class="grade">${g}</div><p>${S.sc} helyes válasz a 8 feladatból, ${S.xp} XP-t szereztél.</p>
+ <div class="row"><button onclick="start('${S.id}',${S.d})">Új kör</button><button class="ghost" onclick="S={v:'home'};render()">Témák</button></div></div>`}
+render();
+</script>
+</body>
+</html>
